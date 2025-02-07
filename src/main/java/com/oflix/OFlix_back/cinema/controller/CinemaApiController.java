@@ -1,11 +1,12 @@
-package com.oflix.OFlix_back.reservations.controller;
+package com.oflix.OFlix_back.cinema.controller;
 
-import com.oflix.OFlix_back.reservations.entity.Reservation;
-import com.oflix.OFlix_back.reservations.service.ReservationsService;
+import com.oflix.OFlix_back.cinema.entity.Cinema;
+import com.oflix.OFlix_back.cinema.service.CinemaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,26 +17,23 @@ import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173") // React app의 URL
 @RequestMapping("/api")
 @RestController
-public class ReservationsApiController {
+public class CinemaApiController {
+    private final CinemaService cinemaService;
 
-    private final ReservationsService reservationsService;
-
-    @GetMapping("/ticketing")
-    public ResponseEntity<Map<String, Object>> ticketing() {
+    @GetMapping("/cinemas")
+    public ResponseEntity<Map<String, Object>> cinemas() {
         // 응답 메시지 설정
-        String message = "Ticketing successful!";
-        List<Reservation> reservations = reservationsService.findAll();
+        List<Cinema> cinemas = cinemaService.findAll();
 
         // 로그에 메시지 출력 (optional)
-        log.info("Ticketing request received: {}", message);
-        log.info("reservationsService.findAll();: {}", reservations);
+        log.info("cinemaService.findAll();: {}", cinemas);
 
         // JSON 형태로 반환할 Map 생성
         Map<String, Object> response = new HashMap<>();
-        response.put("message", message);
-        response.put("reservations", reservations);  // List<Reservations> 추가
+        response.put("cinemas", cinemas);
 
         // 정상 응답 반환
         return ResponseEntity.status(HttpStatus.OK).body(response);
