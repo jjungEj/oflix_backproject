@@ -37,7 +37,7 @@ public class Movie {
 
     @Column(name = "synopsis")
     private String synopsis;
-    
+
     @Enumerated(EnumType.STRING)
     @Column(name = "nation", nullable = false)
     private Nation nation;
