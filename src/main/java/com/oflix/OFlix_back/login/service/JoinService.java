@@ -6,8 +6,11 @@ import com.oflix.OFlix_back.login.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cglib.core.Local;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 
@@ -19,20 +22,18 @@ public class JoinService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public boolean signUpProcess(JoinDTO joinDTO) {
-
-
+    public ResponseEntity<String> signUpProcess(JoinDTO joinDTO) {
         String username = joinDTO.getUsername();
         String password = joinDTO.getPassword();
         String nickname = joinDTO.getNickname();
         String phone_Number = joinDTO.getPhoneNumber();
         LocalDate birthDate = joinDTO.getBirthDate();
 
-
         Boolean isExist = userRepository.existsByUsername(username);
 
         if (isExist) {
-            return false;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("{\"message\": \"Username already exists\"}");
         }
 
         UserEntity data = new UserEntity();
@@ -45,10 +46,10 @@ public class JoinService {
         data.setBirthDate(birthDate);
 
         userRepository.save(data);
-        return true;
+        return ResponseEntity.ok("{\"message\": \"User created successfully\"}");
     }
 
-    public void updateLocalUser () {
+    public void updateLocalUser() {
 
     }
 
