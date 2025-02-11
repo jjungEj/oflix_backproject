@@ -1,8 +1,8 @@
 package com.oflix.OFlix_back.category.service;
 
 
-import com.oflix.OFlix_back.category.dto.RequestCategoryDTO;
-import com.oflix.OFlix_back.category.dto.ResponseCategoryDTO;
+import com.oflix.OFlix_back.category.dto.RequestCategoryDto;
+import com.oflix.OFlix_back.category.dto.ResponseCategoryDto;
 import com.oflix.OFlix_back.category.entity.Category;
 import com.oflix.OFlix_back.category.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,18 +17,18 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Transactional
-    public ResponseCategoryDTO createCategory(RequestCategoryDTO requestCategoryDTO) {
+    public ResponseCategoryDto createCategory(RequestCategoryDto requestCategoryDTO) {
         Category newCategory = requestCategoryDTO.toEntity();
         return categoryRepository.save(newCategory).toResponseCategoryDTO();
     }
 
     @Transactional(readOnly = true)
-    public List<ResponseCategoryDTO> getAllCategories() {
+    public List<ResponseCategoryDto> getAllCategories() {
         return categoryRepository.findAll().stream().map(Category::toResponseCategoryDTO).toList();
     }
 
     @Transactional
-    public ResponseCategoryDTO updateCategory(Long categoryId, RequestCategoryDTO requestCategoryDTO) {
+    public ResponseCategoryDto updateCategory(Long categoryId, RequestCategoryDto requestCategoryDTO) {
         //원래 카테고리 불러오기
         Category category = categoryRepository.findById(categoryId).orElseThrow(()-> new IllegalArgumentException("해당 카테고리가 없습니다."));
         //카테고리 수정하기

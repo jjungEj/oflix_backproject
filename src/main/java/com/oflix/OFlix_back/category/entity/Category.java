@@ -1,8 +1,7 @@
 package com.oflix.OFlix_back.category.entity;
 
 
-import com.oflix.OFlix_back.category.dto.ResponseCategoryDTO;
-import com.oflix.OFlix_back.category.repository.CategoryRepository;
+import com.oflix.OFlix_back.category.dto.ResponseCategoryDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,8 +27,8 @@ public class Category {
         this.categoryName = categoryName;
     }
 
-    public ResponseCategoryDTO toResponseCategoryDTO() {
-        return ResponseCategoryDTO.builder()
+    public ResponseCategoryDto toResponseCategoryDTO() {
+        return ResponseCategoryDto.builder()
                 .categoryId(categoryId)
                 .categoryName(categoryName)
                 .build();
