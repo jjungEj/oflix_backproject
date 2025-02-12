@@ -7,13 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface MovieRepository extends JpaRepository<Movie, Long> {
-    @Query("SELECT m FROM Movie m WHERE " +
-            "(:title is null or m.title LIKE %:title%) AND " +
-            "(:director is null or m.director LIKE %:director%) AND " +
-            "(:actors is null or m.actors LIKE %:actors%)")
-    Page<Movie> searchMovies(@Param("title") String title,
-                             @Param("director") String director,
-                             @Param("actors") String actors,
-                             Pageable pageable);
+    List<Movie> findByTitleContaining(String keyword);
+
 }

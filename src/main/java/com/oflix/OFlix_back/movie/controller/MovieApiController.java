@@ -1,5 +1,6 @@
 package com.oflix.OFlix_back.movie.controller;
 
+import org.springframework.ui.Model;
 import com.oflix.OFlix_back.movie.dto.RequestMovieDto;
 import com.oflix.OFlix_back.movie.dto.ResponseMovieDto;
 import com.oflix.OFlix_back.movie.entity.Movie;
@@ -11,6 +12,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -53,12 +56,11 @@ public class MovieApiController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/search")
-    public Page<ResponseMovieDto> searchMovies(
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) String director,
-            @RequestParam(required = false) String actors,
-            @PageableDefault(size = 10) Pageable pageable) {
-        return movieService.searchMovies(title, director, actors, pageable);
+
+    @GetMapping("/movie/search")
+    public String search(String keyword, Model model) {
+        List<Movie> searchList = movieService.search(keyword);
+        model.addAttribute("searchList", searchList);
+        return "search";
     }
 }

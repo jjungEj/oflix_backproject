@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Log4j2
@@ -51,11 +53,14 @@ public class MovieService {
     public void deleteMovie(Long id) {
         movieRepository.deleteById(id);
     }
-    @Transactional
+    /*@Transactional
     public Page<ResponseMovieDto> searchMovies(String title, String director, String actors, Pageable pageable) {
         return movieRepository.searchMovies(title,director,actors,pageable)
                 .map(ResponseMovieDto::new);
+    }*/
+    @Transactional
+    public List<Movie> search(String keyword) {
+        return movieRepository.findByTitleContaining(keyword);
     }
-
 
 }

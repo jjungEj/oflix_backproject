@@ -15,6 +15,7 @@ public class Movie {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long movieId;
 
     @Column(name = "title",length = 50, nullable = false)
@@ -36,56 +37,18 @@ public class Movie {
     @JoinColumn(name = "category_Id ")
     private Category category;
 
-
     @Enumerated(EnumType.STRING)
     @Column(name = "nation", nullable = false)
     private Nation nation;
-
-    public enum Nation {
-        korea(0, "한국"),
-        USA(1, "미국"),
-        others(2, "해외"),
-        ;
-
-        Nation(int code, String description) {}
-
-    }
-
 
     @Enumerated(EnumType.STRING)
     @Column(name = "viewAge", nullable = false)
     private ViewAge viewAge;
 
-    public enum ViewAge {
-        ALL(0, "전체관람가"),
-        AGE12(1,"12세관람가"),
-        AGE15(2,"15세관람가"),
-        AGE19(3,"19세관람가"),
-        ;
-
-
-        ViewAge(int code, String description) {}
-    }
-
     @Enumerated(EnumType.STRING)
     @Column(name = "genre", nullable = false)
     private Genre genre;
 
-    public enum Genre {
-        FANTASY(0, "판타지"),
-        ACTION(1, "액션"),
-        SF(2, "SF"),
-        CRIME(3, "범죄"),
-        COMEDY(4, "코미디"),
-        DRAMA(5, "드라마"),
-        HORROR(6, "공포"),
-        THRILLER(7, "스릴러"),
-        FAMILY(8, "가족"),
-        MYSTERY(9, "미스터리"),
-        ROMANCE(10, "로맨스"),
-        MUSIC(11, "음악");
-        Genre(int code, String description) {}
-    }
 
 }
 /*
