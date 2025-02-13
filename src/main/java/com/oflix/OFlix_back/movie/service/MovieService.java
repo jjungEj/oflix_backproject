@@ -2,8 +2,13 @@ package com.oflix.OFlix_back.movie.service;
 
 import com.oflix.OFlix_back.category.entity.Category;
 import com.oflix.OFlix_back.category.repository.CategoryRepository;
+import com.oflix.OFlix_back.image.dto.RequestMainPosterDto;
+import com.oflix.OFlix_back.image.dto.RequestStillCutsDto;
+import com.oflix.OFlix_back.image.entity.Image;
+import com.oflix.OFlix_back.image.service.ImageService;
 import com.oflix.OFlix_back.movie.dto.RequestMovieDto;
 import com.oflix.OFlix_back.movie.dto.ResponseMovieDto;
+import com.oflix.OFlix_back.movie.dto.TotalResponseMovieDto;
 import com.oflix.OFlix_back.movie.entity.Movie;
 import com.oflix.OFlix_back.movie.repository.MovieRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +26,8 @@ import java.util.List;
 public class MovieService {
     private final MovieRepository movieRepository;
     private final CategoryRepository categoryRepository;
+    private final ImageService imageService;
+
     @Transactional
     public Page<ResponseMovieDto> findAllMovies(Pageable pageable) {
         return movieRepository.findAll(pageable)
@@ -35,9 +42,34 @@ public class MovieService {
         return null;
     }
     @Transactional
-    public Movie createMovie(Movie movie) {
-        return movieRepository.save(movie);
+    public TotalResponseMovieDto createMovie(RequestMovieDto requestMovieDto, RequestMainPosterDto main, RequestStillCutsDto stills) {
+        //1. 영화 정보 저장
+        Movie movie = Movie.builder()
+                .title(requestMovieDto.getTitle())
+                .releaseDate(requestMovieDto.getReleaseDate())
+                .director(requestMovieDto.getDirector())
+                .actors(requestMovieDto.getActors())
+                .synopsis(requestMovieDto.getSynopsis())
+                .build();
+
+        Movie savedMovie = movieRepository.save(movie);
+
+        //2. 이미지 저장
+        //메인포스터 경로
+        String mainPath = imageService.uploadMainImage(main.getMainPoster(), savedMovie);
+        //스틸컷 경로 리스트
+        List<String> stillPaths = imageService.uplpadStillCuts(stills.getStillCuts(), savedMovie);
+
+        //반환 Dto 생성(영화정보랑 포스터들까지 다 합친거)
+        TotalResponseMovieDto totalMovie = TotalResponseMovieDto.builder()
+                .movie(savedMovie)
+                .mainPosterPath(mainPath)
+                .stillCutPaths(stillPaths)
+                .build();
+
+        return totalMovie;
     }
+
     @Transactional
     public Movie updateMovie(Long id, RequestMovieDto requestMovieDto) {
         Movie existingMovie = movieRepository.findById(id).orElse(null);
