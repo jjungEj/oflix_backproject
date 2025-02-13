@@ -16,6 +16,7 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long imageId;
 
+    @Enumerated(EnumType.STRING)
     private ImageType imageType; //이미지 구분 (포스터인지 스틸컷인지)
 
     private String imageName; //이미지 이름
