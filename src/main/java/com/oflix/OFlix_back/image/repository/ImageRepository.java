@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ImageRepository extends JpaRepository<Image, Long> {
-    @Query("SELECT i FROM Image i WHERE i.movie=:movie AND i.imageType=:imageType") //이게맞나
+    @Query("SELECT i FROM Image i WHERE i.movie=:movie AND i.imageType=:imageType")
     Image findByMainPoster(@Param("movie") Movie movie, @Param("imageType") ImageType imageType); //메인포스터
 
     @Query("SELECT i FROM Image i WHERE i.movie=:movie AND i.imageType=:imageType")
