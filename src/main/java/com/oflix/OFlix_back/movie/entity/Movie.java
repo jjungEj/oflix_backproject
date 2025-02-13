@@ -1,8 +1,12 @@
 package com.oflix.OFlix_back.movie.entity;
 
 import com.oflix.OFlix_back.category.entity.Category;
+import com.oflix.OFlix_back.image.entity.Image;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -49,6 +53,9 @@ public class Movie {
     @Column(name = "genre", nullable = false)
     private Genre genre;
 
+    //연관관계 설정
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
+    List<Image> images = new ArrayList<>();
 
 }
 /*
