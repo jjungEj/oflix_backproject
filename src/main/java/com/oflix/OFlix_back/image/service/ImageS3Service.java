@@ -23,14 +23,13 @@ public class ImageS3Service {
     @Value("${cloud.aws.s3.bucketName}")
     private String bucket; // 버킷명
 
-    //TODO : 다중 파일 업로드로 변경? 아니면 추가? 아니면 걍 컨트롤러에서 업로드를 for문으로 반복해버릴까
-    //TODO : 받아온 이미지를 어떻게 메인과 스틸컷으로 구분하지?
     //s3에 이미지를 업로드
     public String uploadS3Image(MultipartFile file){
         // 1. 파일명 구하기
         // 원래 파일명 추출
         String originalFilename = file.getOriginalFilename();
         // 파일명 중복 방지를 위해 UUID 랜덤값을 앞에 붙여줌
+        //TODO : 코치님 말씀대로 UUID만 저장할까?
         String s3Filename = UUID.randomUUID().toString().substring(0,10)+originalFilename;
         // System.out.println(s3Filename);
 
