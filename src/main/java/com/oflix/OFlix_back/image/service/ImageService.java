@@ -4,6 +4,7 @@ import com.oflix.OFlix_back.image.entity.Image;
 import com.oflix.OFlix_back.image.entity.ImageType;
 import com.oflix.OFlix_back.image.repository.ImageRepository;
 import com.oflix.OFlix_back.movie.entity.Movie;
+import com.oflix.OFlix_back.movie.repository.MovieRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +21,27 @@ import java.util.Map;
 @Slf4j
 public class ImageService {
     private final ImageRepository imageRepository;
+    private final MovieRepository movieRepository;
     private final ImageS3Service imageS3Service;
+
+    //특정 영화의 메인포스터만 반환
+    //경로만 반환해도 되나?
+    public Image getMainImage(Long movieId){
+        Movie movie = movieRepository.findById(movieId).orElseThrow(()->new IllegalArgumentException("존재하지 않는 영화입니다."));
+
+        Image mainPoster = imageRepository.findByMainPoster(movie, ImageType.MAIN);
+
+        return mainPoster;
+    }
+
+    //특정 영화의 스틸컷들 반환
+    public List<Image> getStillCuts(Long movieId){
+        Movie movie = movieRepository.findById(movieId).orElseThrow(()->new IllegalArgumentException("존재하지 않는 영화입니다."));
+
+        List<Image> stillCuts = imageRepository.findByStillCuts(movie, ImageType.STILL);
+
+        return stillCuts;
+    }
 
     //메인이미지랑 스틸컷 이미지 구현 로직을 나누는게 나을지도
     //메인이미지 업로드
