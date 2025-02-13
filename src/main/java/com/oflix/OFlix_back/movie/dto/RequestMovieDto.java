@@ -15,6 +15,8 @@ public class RequestMovieDto {
     private String synopsis;
     private Long categoryId;
 
+    private String releaseDate;
+
     public Movie toEntity(Category category) {
         return Movie.builder()
                 .build();
