@@ -30,9 +30,10 @@ public class MovieApiController {
         return movieService.findAllMovies(pageable);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ResponseMovieDto> findByMovie(@PathVariable Long id) {
-        ResponseMovieDto movie = movieService.findByMovie(id);
+    //특정 영화 정보 조회
+    @GetMapping("/{movieId}")
+    public ResponseEntity<ResponseMovieDto> findByMovie(@PathVariable Long movieId) {
+        ResponseMovieDto movie = movieService.findByMovie(movieId);
         if (movie != null) {
             return new ResponseEntity<>(movie, HttpStatus.OK);
         } else {

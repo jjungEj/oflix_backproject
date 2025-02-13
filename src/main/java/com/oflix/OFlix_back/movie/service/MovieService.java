@@ -5,6 +5,7 @@ import com.oflix.OFlix_back.category.repository.CategoryRepository;
 import com.oflix.OFlix_back.image.dto.RequestMainPosterDto;
 import com.oflix.OFlix_back.image.dto.RequestStillCutsDto;
 import com.oflix.OFlix_back.image.entity.Image;
+import com.oflix.OFlix_back.image.entity.ImageType;
 import com.oflix.OFlix_back.image.service.ImageService;
 import com.oflix.OFlix_back.movie.dto.RequestMovieDto;
 import com.oflix.OFlix_back.movie.dto.ResponseMovieDto;
@@ -34,16 +35,20 @@ public class MovieService {
         return movieRepository.findAll(pageable)
                 .map(ResponseMovieDto::new);
     }
+
+    //특정 영화 조회
     @Transactional
-    public ResponseMovieDto findByMovie(Long id) {
-        Movie movie = movieRepository.findById(id).orElse(null);
-        if (movie != null) {
-            return new ResponseMovieDto(movie);
-        }
-        return null;
+    public ResponseMovieDto findByMovie(Long movieId) {
+        //영화 정보 가져오기
+        Movie movie = movieRepository.findById(movieId).orElseThrow(()->new IllegalArgumentException("영화없음"));
+        ResponseMovieDto responseMovieDto = new ResponseMovieDto(movie);
+
+        return responseMovieDto;
     }
 
     //영화 추가
+    //TODO : 조금 더 고민
+    // NOTE : 반환형을 void로 해도 되지 않을까..?
     @Transactional
     public TotalResponseMovieDto createMovie(RequestMovieDto requestMovieDto, MultipartFile main, List<MultipartFile> still) {
         //1. 영화 정보 저장
@@ -54,7 +59,6 @@ public class MovieService {
                 .actors(requestMovieDto.getActors())
                 .synopsis(requestMovieDto.getSynopsis())
                 .build();
-
         Movie savedMovie = movieRepository.save(movie);
 
         //2. 이미지 저장
@@ -62,7 +66,6 @@ public class MovieService {
         String mainPath = imageService.uploadMainImage(main, savedMovie);
         //스틸컷 경로 리스트
         List<String> stillPaths = imageService.uplpadStillCuts(still, savedMovie);
-
         //반환 Dto 생성(영화정보랑 포스터들까지 다 합친거)
         TotalResponseMovieDto totalMovie = TotalResponseMovieDto.builder()
                 .movie(savedMovie)
@@ -99,3 +102,31 @@ public class MovieService {
     }
 
 }
+
+    /*
+    //특정 영화 조회 이전 코드
+    //영화 정보랑 이미지(포스터, 스틸컷들)를 전부 조회함
+    @Transactional
+    public TotalResponseMovieDto findByMovie(Long movieId) {
+        //영화 정보 가져오기
+        Movie movie = movieRepository.findById(movieId).orElse(null);
+        /*
+        if (movie != null) {
+            return new ResponseMovieDto(movie);
+        }
+
+        //이미지 경로 가져오기
+        //메인이미지
+        String main = imageService.getMainImage(movieId);
+        //스틸컷 이미지
+        List<String> stillCuts = imageService.getStillCuts(movieId);
+        //영화정보, 이미지(메인포스터, 스틸컷) 경로를 모두 담은 dto를 생성
+        TotalResponseMovieDto responseMovie = TotalResponseMovieDto.builder()
+                .movie(movie)
+                .mainPosterPath(main)
+                .stillCutPaths(stillCuts)
+                .build();
+
+        return responseMovie;
+    }
+    */
