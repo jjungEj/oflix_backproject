@@ -42,8 +42,11 @@ public class MovieApiController {
 
     //영화 추가
     @PostMapping
-    public ResponseEntity<TotalResponseMovieDto> createMovie(@RequestBody RequestMovieDto requestMovieDto, @RequestPart RequestMainPosterDto mainPosterDto, @RequestPart RequestStillCutsDto stillCutsDto) {
-        TotalResponseMovieDto createdMovie = movieService.createMovie(requestMovieDto, mainPosterDto, stillCutsDto);
+    //이미지dto를 쓰면 오류남 왜지....
+    public ResponseEntity<TotalResponseMovieDto> createMovie(@RequestPart("movie") RequestMovieDto requestMovieDto,
+                                                             @RequestPart("main") MultipartFile main,
+                                                             @RequestPart("still") List<MultipartFile> still) {
+        TotalResponseMovieDto createdMovie = movieService.createMovie(requestMovieDto, main, still);
         return new ResponseEntity<>(createdMovie, HttpStatus.CREATED);
     }
 

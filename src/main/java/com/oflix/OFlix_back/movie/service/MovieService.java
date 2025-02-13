@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -41,8 +42,10 @@ public class MovieService {
         }
         return null;
     }
+
+    //영화 추가
     @Transactional
-    public TotalResponseMovieDto createMovie(RequestMovieDto requestMovieDto, RequestMainPosterDto main, RequestStillCutsDto stills) {
+    public TotalResponseMovieDto createMovie(RequestMovieDto requestMovieDto, MultipartFile main, List<MultipartFile> still) {
         //1. 영화 정보 저장
         Movie movie = Movie.builder()
                 .title(requestMovieDto.getTitle())
@@ -56,9 +59,9 @@ public class MovieService {
 
         //2. 이미지 저장
         //메인포스터 경로
-        String mainPath = imageService.uploadMainImage(main.getMainPoster(), savedMovie);
+        String mainPath = imageService.uploadMainImage(main, savedMovie);
         //스틸컷 경로 리스트
-        List<String> stillPaths = imageService.uplpadStillCuts(stills.getStillCuts(), savedMovie);
+        List<String> stillPaths = imageService.uplpadStillCuts(still, savedMovie);
 
         //반환 Dto 생성(영화정보랑 포스터들까지 다 합친거)
         TotalResponseMovieDto totalMovie = TotalResponseMovieDto.builder()
