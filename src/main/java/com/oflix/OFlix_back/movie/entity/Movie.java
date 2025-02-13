@@ -54,7 +54,7 @@ public class Movie {
     private Genre genre;
 
     //연관관계 설정
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     List<Image> images = new ArrayList<>();
 
 }
