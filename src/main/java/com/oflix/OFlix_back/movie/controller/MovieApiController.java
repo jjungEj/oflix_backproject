@@ -42,7 +42,7 @@ public class MovieApiController {
 
     //영화 추가
     @PostMapping
-    //이미지dto를 쓰면 오류남 왜지....
+    //이미지dto 쓰면 오류나서 MultipartFile로 변경함
     public ResponseEntity<TotalResponseMovieDto> createMovie(@RequestPart("movie") RequestMovieDto requestMovieDto,
                                                              @RequestPart("main") MultipartFile main,
                                                              @RequestPart("still") List<MultipartFile> still) {
