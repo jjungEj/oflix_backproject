@@ -16,7 +16,7 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long imageId;
 
-    private ImageType imageType; //이미지 구분 (포스터인지 스틸컷인지) enum으로 바꾸는 게 나을지도
+    private ImageType imageType; //이미지 구분 (포스터인지 스틸컷인지)
 
     private String imageName; //이미지 이름
 
@@ -26,7 +26,4 @@ public class Image {
     @ManyToOne
     @JoinColumn(name="movie_id") //movieId?
     private Movie movie;
-
-
-
 }
