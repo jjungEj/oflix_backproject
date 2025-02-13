@@ -36,11 +36,7 @@ public class Movie {
 
     @Column(name = "synopsis")
     private String synopsis;
-
-    @ManyToOne
-    @JoinColumn(name = "category_Id ")
-    private Category category;
-
+    
     @Enumerated(EnumType.STRING)
     @Column(name = "nation", nullable = false)
     private Nation nation;
@@ -54,9 +50,12 @@ public class Movie {
     private Genre genre;
 
     //연관관계 설정
+    @ManyToOne
+    @JoinColumn(name = "category_Id")
+    private Category category;
+
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     List<Image> images = new ArrayList<>();
-
 }
 /*
 movie_id 영화 id Long
