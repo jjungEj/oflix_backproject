@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Setter
 @Getter
 @NoArgsConstructor
-public class JoinDTO {
+public class UserDTO {
 
     private String nickname;
 
