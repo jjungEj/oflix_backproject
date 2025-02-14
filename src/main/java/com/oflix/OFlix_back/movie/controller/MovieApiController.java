@@ -3,6 +3,8 @@ package com.oflix.OFlix_back.movie.controller;
 import com.oflix.OFlix_back.image.dto.RequestMainPosterDto;
 import com.oflix.OFlix_back.image.dto.RequestStillCutsDto;
 import com.oflix.OFlix_back.movie.dto.TotalResponseMovieDto;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.ui.Model;
 import com.oflix.OFlix_back.movie.dto.RequestMovieDto;
 import com.oflix.OFlix_back.movie.dto.ResponseMovieDto;
@@ -68,11 +70,41 @@ public class MovieApiController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    //제목 검색
+    @GetMapping("/search/title/{title}")
+    public ResponseEntity<?> searchMovie(@PathVariable String title,
+                                         @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ResponseMovieDto> movies = movieService.searchTitle(title,pageable);
 
+        return new ResponseEntity<>(movies, HttpStatus.OK);
+    }
+
+    //배우 검색
+    @GetMapping("/search/actors/{actors}")
+    public ResponseEntity<?> searchActors(@PathVariable String actors,
+                                          @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ResponseMovieDto> movies = movieService.searchActors(actors, pageable);
+
+        return new ResponseEntity<>(movies, HttpStatus.OK);
+    }
+
+    //감독 검색
+    @GetMapping("/search/director/{director}")
+    public ResponseEntity<?> searchDirector(@PathVariable String director,
+                                            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ResponseMovieDto>movies = movieService.searchDirector(director, pageable);
+        return new ResponseEntity<>(movies, HttpStatus.OK);
+    }
+}
+
+/*
     @GetMapping("/movie/search")
     public String search(String keyword, Model model) {
         List<Movie> searchList = movieService.search(keyword);
         model.addAttribute("searchList", searchList);
         return "search";
     }
-}
+ */

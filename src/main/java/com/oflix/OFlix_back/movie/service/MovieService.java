@@ -20,7 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -96,11 +98,24 @@ public class MovieService {
         return movieRepository.searchMovies(title,director,actors,pageable)
                 .map(ResponseMovieDto::new);
     }*/
+
+    //제목 검색
     @Transactional
-    public List<Movie> search(String keyword) {
-        return movieRepository.findByTitleContaining(keyword);
+    public Page<ResponseMovieDto> searchTitle(String keyword, Pageable pageable) {
+        return movieRepository.findByTitleContaining(keyword, pageable).map(ResponseMovieDto::new);
     }
 
+    //배우 검색
+    @Transactional
+    public Page<ResponseMovieDto> searchActors(String keyword, Pageable pageable) {
+        return movieRepository.findByActorsContaining(keyword, pageable).map(ResponseMovieDto::new);
+    }
+
+    //감독 검색
+    @Transactional
+    public Page<ResponseMovieDto> searchDirector(String keyword, Pageable pageable) {
+        return movieRepository.findByDirectorContaining(keyword, pageable).map(ResponseMovieDto::new);
+    }
 }
 
     /*

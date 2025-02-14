@@ -10,6 +10,15 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface MovieRepository extends JpaRepository<Movie, Long> {
-    List<Movie> findByTitleContaining(String keyword);
+    //영화 제목 검색
+    @Query("SELECT m FROM Movie m WHERE m.title LIKE %:keyword%")
+    Page<Movie> findByTitleContaining(String keyword, Pageable pageable);
 
+    //배우로 검색
+    @Query("SELECT m FROM Movie m WHERE m.actors LIKE %:keyword%")
+    Page<Movie> findByActorsContaining(String keyword, Pageable pageable);
+
+    //감독으로 검색
+    @Query("SELECT m FROM Movie m WHERE m.director LIKE %:keyword%")
+    Page<Movie> findByDirectorContaining(String keyword, Pageable pageable);
 }
