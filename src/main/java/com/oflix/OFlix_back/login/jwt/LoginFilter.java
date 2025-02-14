@@ -2,7 +2,9 @@ package com.oflix.OFlix_back.login.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oflix.OFlix_back.login.dto.CustomUserDetails;
+import com.oflix.OFlix_back.login.dto.ErrorResponse;
 import com.oflix.OFlix_back.login.dto.LoginDTO;
+import com.oflix.OFlix_back.login.dto.LoginResponse;
 import com.oflix.OFlix_back.login.entity.RefreshEntity;
 import com.oflix.OFlix_back.login.repository.RefreshRepository;
 import io.jsonwebtoken.Jwts;
@@ -66,7 +68,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
         //유저 정보
         String username = authentication.getName();
 
@@ -81,25 +83,36 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         addRefreshEntity(username, refresh, 86400000L);
 
-        // 응답 본문을 JSON 형식으로 설정
-        response.setContentType("application/json");
-        String jsonResponse = String.format(
-                "{\"accessToken\": \"%s\", \"refreshToken\": \"%s\"}",
-                access, refresh
-        );
+        //응답 설정
+        response.setHeader("Authorization", "Bearer " + access);
+        response.addCookie(createCookie("refresh", refresh));
+        response.setStatus(HttpStatus.OK.value());
 
-        try {
-            response.getWriter().write(jsonResponse);
-            response.setStatus(HttpStatus.OK.value());
-        } catch (IOException e) {
-            // 예외 처리: 응답 작성 실패 시
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        }
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        // ✅ JSON 응답 추가
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonResponse = objectMapper.writeValueAsString(
+                new LoginResponse(HttpStatus.OK.value(), "LOGIN_SUCCESS", "로그인이 성공적으로 처리되었습니다.", access, username, role)
+        );
+        response.getWriter().write(jsonResponse);
+        response.getWriter().flush();
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        response.setStatus(401);
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        // ✅ JSON 에러 응답 추가
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonResponse = objectMapper.writeValueAsString(
+                new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), "LOGIN_FAILED", "아이디 또는 비밀번호가 올바르지 않습니다.")
+        );
+        response.getWriter().write(jsonResponse);
+        response.getWriter().flush();
     }
 
     private void addRefreshEntity(String username, String refresh, Long expiredMs) {
