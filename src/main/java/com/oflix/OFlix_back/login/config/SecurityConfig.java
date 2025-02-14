@@ -79,12 +79,13 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/", "/login", "/api/user/join", "/api/reissue").permitAll()
+                        .requestMatchers("/", "/login", "/api/user/join", "/api/reissue", "/api/schedules").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().permitAll()
                 );
         http
                 .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
+
 
         http
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);

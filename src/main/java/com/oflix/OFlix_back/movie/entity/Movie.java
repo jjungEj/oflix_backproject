@@ -1,5 +1,6 @@
 package com.oflix.OFlix_back.movie.entity;
 
+import com.oflix.OFlix_back.schedule.entity.MovieSchedule;
 import com.oflix.OFlix_back.category.entity.Category;
 import com.oflix.OFlix_back.image.entity.Image;
 import com.oflix.OFlix_back.movie.dto.ResponseMovieDto;
