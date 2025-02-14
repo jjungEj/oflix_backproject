@@ -2,6 +2,7 @@ package com.oflix.OFlix_back.movie.entity;
 
 import com.oflix.OFlix_back.category.entity.Category;
 import com.oflix.OFlix_back.image.entity.Image;
+import com.oflix.OFlix_back.movie.dto.ResponseMovieDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -56,6 +57,19 @@ public class Movie {
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     List<Image> images = new ArrayList<>();
+
+    public ResponseMovieDto toResponseMovieDto() {
+        return ResponseMovieDto.builder()
+                .title(title)
+                .releaseDate(releaseDate)
+                .director(director)
+                .actors(actors)
+                .synopsis(synopsis)
+                .nation(nation)
+                .viewAge(viewAge)
+                .genre(genre)
+                .build();
+    }
 }
 /*
 movie_id 영화 id Long

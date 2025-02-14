@@ -1,7 +1,10 @@
 package com.oflix.OFlix_back.movie.service;
 
+import ch.qos.logback.core.testUtil.MockInitialContext;
 import com.oflix.OFlix_back.category.entity.Category;
 import com.oflix.OFlix_back.category.repository.CategoryRepository;
+import com.oflix.OFlix_back.global.entity.exception.CustomException;
+import com.oflix.OFlix_back.global.entity.exception.ErrorCode;
 import com.oflix.OFlix_back.image.dto.RequestMainPosterDto;
 import com.oflix.OFlix_back.image.dto.RequestStillCutsDto;
 import com.oflix.OFlix_back.image.entity.Image;
@@ -42,10 +45,9 @@ public class MovieService {
     @Transactional
     public ResponseMovieDto findByMovie(Long movieId) {
         //영화 정보 가져오기
-        Movie movie = movieRepository.findById(movieId).orElseThrow(()->new IllegalArgumentException("영화없음"));
-        ResponseMovieDto responseMovieDto = new ResponseMovieDto(movie);
+        Movie movie = movieRepository.findById(movieId).orElseThrow(()->new CustomException(ErrorCode.MOVIE_NOT_FOUND));
 
-        return responseMovieDto;
+        return new ResponseMovieDto(movie);
     }
 
     //영화 추가
@@ -79,33 +81,37 @@ public class MovieService {
     }
 
     @Transactional
-    public Movie updateMovie(Long id, RequestMovieDto requestMovieDto) {
-        Movie existingMovie = movieRepository.findById(id).orElse(null);
-        if (existingMovie != null) {
-            Category category = categoryRepository.findById(requestMovieDto.getCategoryId()).orElse(null);
-            Movie movie = requestMovieDto.toEntity(category);
-            movie.setMovieId(id);
-            return movieRepository.save(movie);
-        }
-        return null;
+    public ResponseMovieDto updateMovie(Long movieId, RequestMovieDto requestMovieDto) {
+        //영화 조회
+        Movie movie = movieRepository.findById(movieId)
+                .orElseThrow(()-> new CustomException(ErrorCode.MOVIE_NOT_FOUND));
+
+        movie.setTitle(requestMovieDto.getTitle());
+        movie.setReleaseDate(requestMovieDto.getReleaseDate());
+        movie.setDirector(requestMovieDto.getDirector());
+        movie.setActors(requestMovieDto.getActors());
+        movie.setSynopsis(requestMovieDto.getSynopsis());
+
+        return movieRepository.save(movie).toResponseMovieDto();
     }
     @Transactional
-    public void deleteMovie(Long id) {
-        movieRepository.deleteById(id);
+    public void deleteMovie(Long movieId) {
+        //영화 조회
+        Movie movie = movieRepository.findById(movieId)
+                .orElseThrow(()-> new CustomException(ErrorCode.MOVIE_NOT_FOUND));
+        //관련 이미지 삭제
+        /*List<Image> images = movie.getImages();
+        for (Image image : images) {
+            imageService.deleteImage(image);
+        }*/
+        movieRepository.delete(movie);
     }
-    /*@Transactional
-    public Page<ResponseMovieDto> searchMovies(String title, String director, String actors, Pageable pageable) {
-        return movieRepository.searchMovies(title,director,actors,pageable)
-                .map(ResponseMovieDto::new);
-    }*/
 
-    //제목 검색
     @Transactional
     public Page<ResponseMovieDto> searchTitle(String keyword, Pageable pageable) {
         return movieRepository.findByTitleContaining(keyword, pageable).map(ResponseMovieDto::new);
     }
 
-    //배우 검색
     @Transactional
     public Page<ResponseMovieDto> searchActors(String keyword, Pageable pageable) {
         return movieRepository.findByActorsContaining(keyword, pageable).map(ResponseMovieDto::new);
