@@ -81,7 +81,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/", "/login", "/api/user/join", "/api/reissue").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 );
         http
                 .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
