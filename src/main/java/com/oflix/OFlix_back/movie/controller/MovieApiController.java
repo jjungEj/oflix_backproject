@@ -1,8 +1,10 @@
 package com.oflix.OFlix_back.movie.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oflix.OFlix_back.image.dto.RequestMainPosterDto;
 import com.oflix.OFlix_back.image.dto.RequestStillCutsDto;
 import com.oflix.OFlix_back.movie.dto.TotalResponseMovieDto;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.ui.Model;
@@ -55,8 +57,8 @@ public class MovieApiController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Movie> updateMovie(@PathVariable Long id, @RequestBody RequestMovieDto requestMovieDto) {
-        Movie updatedMovie = movieService.updateMovie(id, requestMovieDto);
+    public ResponseEntity<ResponseMovieDto> updateMovie(@PathVariable Long id, @RequestBody RequestMovieDto requestMovieDto) {
+        ResponseMovieDto updatedMovie = movieService.updateMovie(id, requestMovieDto);
         if (updatedMovie != null) {
             return new ResponseEntity<>(updatedMovie, HttpStatus.OK);
         } else {
@@ -70,7 +72,7 @@ public class MovieApiController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    //제목 검색
+
     @GetMapping("/search/title/{title}")
     public ResponseEntity<?> searchMovie(@PathVariable String title,
                                          @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
@@ -99,12 +101,3 @@ public class MovieApiController {
         return new ResponseEntity<>(movies, HttpStatus.OK);
     }
 }
-
-/*
-    @GetMapping("/movie/search")
-    public String search(String keyword, Model model) {
-        List<Movie> searchList = movieService.search(keyword);
-        model.addAttribute("searchList", searchList);
-        return "search";
-    }
- */
