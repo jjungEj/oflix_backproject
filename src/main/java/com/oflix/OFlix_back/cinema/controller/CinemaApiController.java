@@ -39,22 +39,4 @@ public class CinemaApiController {
 
         return ResponseEntity.ok(response);
     }
-
-    /**
-     * 특정 극장 상세 조회
-     */
-    @GetMapping("/cinemas/{id}")
-    public ResponseEntity<Object> getCinemaById(@PathVariable Long id) {
-        Optional<Cinema> cinema = cinemaService.findById(id);
-
-        if (cinema.isPresent()) {
-            log.info("Cinema found: {}", cinema.get());
-            return ResponseEntity.ok(cinema.get());
-        } else {
-            log.warn("Cinema with id {} not found", id);
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Cinema not found");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-        }
-    }
 }

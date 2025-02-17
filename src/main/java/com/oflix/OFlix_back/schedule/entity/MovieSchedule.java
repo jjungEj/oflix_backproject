@@ -14,9 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class MovieSchedule {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,16 +24,11 @@ public class MovieSchedule {
     private TheaterHall theaterHall;
 
     @ManyToOne
-    @JoinColumn(name = "cinema_id", nullable = false)
-    private Cinema cinema;
-
-    @ManyToOne
     @JoinColumn(name = "movie_id", nullable = false)
     private Movie movie;
 
-    private String userName;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
-    private Timestamp startTime;
-    private Timestamp endTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

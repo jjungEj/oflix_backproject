@@ -35,7 +35,7 @@ public class MovieScheduleService {
                     dto.setStartTime(schedule.getStartTime().toString());
                     dto.setEndTime(schedule.getEndTime().toString());
                     dto.setTitle(schedule.getMovie().getTitle());
-                    dto.setPosterUrl(schedule.getMovie().getPosterUrl());
+//                    dto.setPosterUrl(schedule.getMovie().getImages().getPosterUrl());
                     dto.setCinemaId(schedule.getTheaterHall().getCinema().getId());
                     dto.setCinemaName(schedule.getTheaterHall().getCinema().getName());
                     dto.setCinemaName(schedule.getTheaterHall().getCinema().getLocation());
@@ -47,8 +47,6 @@ public class MovieScheduleService {
 //                    dto.setCinemaId(cinema.getId());
 //                    dto.setCinemaName(cinema.getName());
 //                    dto.setCinemaLocation(cinema.getLocation());
-                    System.out.println(dto.toString());
-                    System.out.println(dto);
                     return dto;
                 })
                 .toList();
