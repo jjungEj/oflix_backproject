@@ -9,7 +9,6 @@ public class LoginResponse {
     private int status;
     private String errorCode;
     private String message;
-    private String accessToken;
     private String username;
     private String role;
 }

@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Table(name = "users")
-public class UserEntity extends BaseEntity {
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

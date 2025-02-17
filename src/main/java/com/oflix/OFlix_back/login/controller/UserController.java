@@ -1,10 +1,12 @@
 package com.oflix.OFlix_back.login.controller;
 
+import com.oflix.OFlix_back.login.dto.CustomUserDetails;
 import com.oflix.OFlix_back.login.dto.UserDTO;
 import com.oflix.OFlix_back.login.dto.JoinResponseDTO;
 import com.oflix.OFlix_back.login.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,6 +15,18 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+
+
+
+    @GetMapping("/userInfo")
+    public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
+        String user = userDetails.getUsername();
+        return ResponseEntity.ok(user);
+    }
 
 
     @PostMapping("/join")
