@@ -7,6 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "cinemas")
 public class Cinema {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

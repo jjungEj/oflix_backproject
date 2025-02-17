@@ -1,3 +1,5 @@
+package com.oflix.OFlix_back.payment.entity;
+
 import com.oflix.OFlix_back.reservations.entity.Reservation;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,6 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "payments")
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

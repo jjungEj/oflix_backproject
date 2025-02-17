@@ -31,22 +31,21 @@ public class MovieScheduleService {
                 .map(schedule -> {
                     MovieScheduleResponseDto dto = new MovieScheduleResponseDto();
 
-                    dto.setScheduleId(schedule.getId());
+                    dto.setScheduleId(schedule.getMovieScheduleId());
                     dto.setStartTime(schedule.getStartTime().toString());
                     dto.setEndTime(schedule.getEndTime().toString());
                     dto.setTitle(schedule.getMovie().getTitle());
+                    //TODO : 이미지 출력할 수 있도록 수정하기
 //                    dto.setPosterUrl(schedule.getMovie().getImages().getPosterUrl());
                     dto.setCinemaId(schedule.getTheaterHall().getCinema().getId());
                     dto.setCinemaName(schedule.getTheaterHall().getCinema().getName());
                     dto.setCinemaName(schedule.getTheaterHall().getCinema().getLocation());
-//
-//                    List<Seat> seats = seatRepository.findByTheaterHall(schedule.getTheaterHall());
-//                    dto.setRemainingSeats(seats.size());
-//
-//                    Cinema cinema = schedule.getTheaterHall().getCinema();
-//                    dto.setCinemaId(cinema.getId());
-//                    dto.setCinemaName(cinema.getName());
-//                    dto.setCinemaLocation(cinema.getLocation());
+
+                    List<Seat> totalSeats = seatRepository.findByTheaterHall(schedule.getTheaterHall());
+                    List<Seat> remainingSeats = seatRepository.findByTheaterHallAndIsAvailable(schedule.getTheaterHall(), true);
+                    dto.setTotalSeats(totalSeats.size());
+                    dto.setRemainingSeats(remainingSeats);
+
                     return dto;
                 })
                 .toList();

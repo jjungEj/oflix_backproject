@@ -14,10 +14,12 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "movie_schedules")
 public class MovieSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id")
+    private Long movieScheduleId;
 
     @ManyToOne
     @JoinColumn(name = "theater_hall_id", nullable = false)

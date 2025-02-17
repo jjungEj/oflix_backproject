@@ -7,10 +7,12 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "theater_halls")
 public class TheaterHall {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id")
+    private Long TheaterHallId;
 
     @ManyToOne
     @JoinColumn(name = "cinema_id", nullable = false)

@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface SeatRepository extends JpaRepository<Seat, Long> {
-//    List<Seat> findByTheaterHallAndIsAvailable(TheaterHall theaterHall, Boolean isAvailable);
-//    List<Seat> findByTheaterHall(TheaterHall theaterHall);
+    List<Seat> findByTheaterHallAndIsAvailable(TheaterHall theaterHall, Boolean isAvailable);
+    List<Seat> findByTheaterHall(TheaterHall theaterHall);
 }
