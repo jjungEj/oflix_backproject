@@ -1,7 +1,7 @@
 package com.oflix.OFlix_back.reservations.entity;
 
 import com.oflix.OFlix_back.cinema.entity.Seat;
-import com.oflix.OFlix_back.login.entity.UserEntity;
+import com.oflix.OFlix_back.login.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +19,7 @@ public class Reservation {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity user;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "seat_id", nullable = false)
