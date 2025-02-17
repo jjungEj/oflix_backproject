@@ -2,7 +2,7 @@ package com.oflix.OFlix_back.login.service;
 
 import com.oflix.OFlix_back.login.dto.UserDTO;
 import com.oflix.OFlix_back.login.dto.JoinResponseDTO;
-import com.oflix.OFlix_back.login.entity.UserEntity;
+import com.oflix.OFlix_back.login.entity.User;
 import com.oflix.OFlix_back.login.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +30,7 @@ public class UserService {
                     .body(new JoinResponseDTO("Username already exists", null, null, null));
         }
 
-        UserEntity user = new UserEntity();
+        User user = new User();
         user.setUsername(userDTO.getUsername());
         user.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
         user.setNickname(userDTO.getNickname());
@@ -50,14 +50,14 @@ public class UserService {
 
 
     public ResponseEntity<JoinResponseDTO> getUserByUsername(String username) {
-        Optional<UserEntity> user = userRepository.findByUsername(username);
+        Optional<User> user = userRepository.findByUsername(username);
 
         if (user.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new JoinResponseDTO("User not found", null, null, null));
         }
 
-        UserEntity foundUser = user.get();
+        User foundUser = user.get();
         return ResponseEntity.ok(
                 new JoinResponseDTO("User found",
                         foundUser.getUsername(),
@@ -70,14 +70,14 @@ public class UserService {
      * 회원 정보 수정 (Update)
      */
     public ResponseEntity<JoinResponseDTO> updateUser(String username, UserDTO updateDTO) {
-        Optional<UserEntity> optionalUser = userRepository.findByUsername(username);
+        Optional<User> optionalUser = userRepository.findByUsername(username);
 
         if (optionalUser.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new JoinResponseDTO("User not found", null, null, null));
         }
 
-        UserEntity user = optionalUser.get();
+        User user = optionalUser.get();
         user.setNickname(updateDTO.getNickname());
         user.setPhoneNumber(updateDTO.getPhoneNumber());
 
@@ -100,7 +100,7 @@ public class UserService {
      * 회원 삭제 (Delete)
      */
     public ResponseEntity<String> deleteUser(String username) {
-        Optional<UserEntity> optionalUser = userRepository.findByUsername(username);
+        Optional<User> optionalUser = userRepository.findByUsername(username);
 
         if (optionalUser.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

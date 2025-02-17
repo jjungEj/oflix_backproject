@@ -1,7 +1,7 @@
 package com.oflix.OFlix_back.login.jwt;
 
 import com.oflix.OFlix_back.login.dto.CustomUserDetails;
-import com.oflix.OFlix_back.login.entity.UserEntity;
+import com.oflix.OFlix_back.login.entity.User;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -66,10 +66,10 @@ public class JWTFilter extends OncePerRequestFilter {
         String username = jwtUtil.getUsername(accessToken);
         String role = jwtUtil.getRole(accessToken);
 
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUsername(username);
-        userEntity.setRole(role);
-        CustomUserDetails customUserDetails = new CustomUserDetails(userEntity);
+        User user = new User();
+        user.setUsername(username);
+        user.setRole(role);
+        CustomUserDetails customUserDetails = new CustomUserDetails(user);
 
         Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authToken);
