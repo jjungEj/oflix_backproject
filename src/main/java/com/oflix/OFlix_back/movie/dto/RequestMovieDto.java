@@ -7,13 +7,15 @@ import com.oflix.OFlix_back.movie.entity.Nation;
 import com.oflix.OFlix_back.movie.entity.ViewAge;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class RequestMovieDto {
     private String title;
-    private String releaseDate;
+    private LocalDate releaseDate;
     private String director;
     private String actors;
     private String synopsis;

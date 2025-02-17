@@ -8,6 +8,7 @@ import com.oflix.OFlix_back.movie.entity.Nation;
 import com.oflix.OFlix_back.movie.entity.ViewAge;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 public class ResponseMovieDto {
     private Long movieId;
     private String title;
-    private String releaseDate;
+    private LocalDate releaseDate;
     private String director;
     private String actors;
     private String synopsis;

@@ -7,6 +7,7 @@ import com.oflix.OFlix_back.movie.dto.ResponseMovieDto;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class Movie {
     private String title;
 
     @Column(name = "release_Date")
-    private String releaseDate;
+    private LocalDate releaseDate;
 
     @Column(name = "director")
     private String director;
