@@ -1,13 +1,11 @@
 package com.oflix.OFlix_back.login.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oflix.OFlix_back.login.dto.CustomUserDetails;
 import com.oflix.OFlix_back.login.dto.ErrorResponse;
 import com.oflix.OFlix_back.login.dto.LoginDTO;
 import com.oflix.OFlix_back.login.dto.LoginResponse;
-import com.oflix.OFlix_back.login.entity.RefreshEntity;
+import com.oflix.OFlix_back.login.entity.Refresh;
 import com.oflix.OFlix_back.login.repository.RefreshRepository;
-import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletInputStream;
@@ -84,8 +82,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         addRefreshEntity(username, refresh, 86400000L);
 
         //응답 설정
-        response.setHeader("Authorization", "Bearer " + access);
-        response.addCookie(createCookie("refresh", refresh));
+        //response.setHeader("Authorization", "Bearer " + access);
+
+        response.addCookie(createCookie("access", access, 600));
+        response.addCookie(createCookie("refresh", refresh , 86400));
         response.setStatus(HttpStatus.OK.value());
 
         response.setContentType("application/json");
@@ -94,7 +94,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         // ✅ JSON 응답 추가
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonResponse = objectMapper.writeValueAsString(
-                new LoginResponse(HttpStatus.OK.value(), "LOGIN_SUCCESS", "로그인이 성공적으로 처리되었습니다.", access, username, role)
+                new LoginResponse(HttpStatus.OK.value(), "LOGIN_SUCCESS", "로그인이 성공적으로 처리되었습니다.", username, role)
         );
         response.getWriter().write(jsonResponse);
         response.getWriter().flush();
@@ -119,7 +119,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         Date date = new Date(System.currentTimeMillis() + expiredMs);
 
-        RefreshEntity refreshEntity = new RefreshEntity();
+        Refresh refreshEntity = new Refresh();
         refreshEntity.setUsername(username);
         refreshEntity.setRefresh(refresh);
         refreshEntity.setExpiration(date.toString());
@@ -127,10 +127,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         refreshRepository.save(refreshEntity);
     }
 
-    private Cookie createCookie(String key, String value) {
+    private Cookie createCookie(String key, String value, int maxage) {
 
         Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(246060);
+        cookie.setMaxAge(maxage);
         //cookie.setSecure(true);
         //cookie.setPath("/");
         cookie.setHttpOnly(true);

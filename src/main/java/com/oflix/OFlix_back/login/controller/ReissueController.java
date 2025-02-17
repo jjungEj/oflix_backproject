@@ -1,6 +1,6 @@
 package com.oflix.OFlix_back.login.controller;
 
-import com.oflix.OFlix_back.login.entity.RefreshEntity;
+import com.oflix.OFlix_back.login.entity.Refresh;
 import com.oflix.OFlix_back.login.jwt.JWTUtil;
 import com.oflix.OFlix_back.login.repository.RefreshRepository;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -100,7 +100,7 @@ public class ReissueController {
 
         Date date = new Date(System.currentTimeMillis() + expiredMs);
 
-        RefreshEntity refreshEntity = new RefreshEntity();
+        Refresh refreshEntity = new Refresh();
         refreshEntity.setUsername(username);
         refreshEntity.setRefresh(refresh);
         refreshEntity.setExpiration(date.toString());
