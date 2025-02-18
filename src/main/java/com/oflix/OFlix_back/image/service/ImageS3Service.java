@@ -5,13 +5,14 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.net.URLDecoder;
 import java.util.UUID;
 
@@ -29,8 +30,7 @@ public class ImageS3Service {
         // 원래 파일명 추출
         String originalFilename = file.getOriginalFilename();
         // 파일명 중복 방지를 위해 UUID 랜덤값을 앞에 붙여줌
-        //TODO : 코치님 말씀대로 UUID만 저장할까?
-        String s3Filename = UUID.randomUUID().toString().substring(0,10)+originalFilename;
+        String s3Filename = UUID.randomUUID().toString().substring(0,10)/*+originalFilename*/;
         // System.out.println(s3Filename);
 
         try {
@@ -81,5 +81,55 @@ public class ImageS3Service {
         catch (UnsupportedEncodingException e){
             return e.getMessage();
         }
+    }
+
+    // 썸네일 변환 및 업로드
+    /*
+        1. 원본 이미지를 썸네일로 변환 (Buffered image)
+        2. BuffredImage -> byte[] -> ByteArrayInputStream
+        3. 메타 데이터 등 추출
+        4. s3에 썸네일로 저장
+        5. db에 썸네일 경로 저장 (ImageService에서)
+     */
+
+
+
+
+
+
+    public String converToThumbnail(MultipartFile image) throws IOException{
+        //원본 이미지를 썸네일(BufferedImage)로 변환하고 inputStream으로 변환
+        BufferedImage thumbnail = Thumbnails.of(image.getInputStream())
+                .size(200,300)
+                .asBufferedImage();
+
+        byte[] thumbnailByteArray = toByteArray(thumbnail, image.getContentType());
+        ByteArrayInputStream result = new ByteArrayInputStream(thumbnailByteArray);
+
+        //원래 파일명 추출
+        String originalFilename = image.getOriginalFilename();
+        //썸네일 파일명: 앞에 s_ 붙여서 썸네일인거 구분하기
+        String s3Filename = "s_"+UUID.randomUUID().toString().substring(0,10)+originalFilename;
+
+        //ObjectMeta 데이터 설정
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType("image/"+image.getContentType());
+        objectMetadata.setContentLength(thumbnailByteArray.length);
+
+        //썸네일도 s3에 저장
+        PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, s3Filename, result, objectMetadata);
+        amazonS3.putObject(putObjectRequest);
+
+        //썸네일 경로 반환
+        return amazonS3.getUrl(bucket, s3Filename).toString();
+    }
+
+    // BufferedImage -> byte[]
+    public byte[] toByteArray(BufferedImage thumbnail, String format) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(thumbnail, format, baos);
+        byte[] bytes = baos.toByteArray();
+
+        return bytes;
     }
 }
