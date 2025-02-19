@@ -1,4 +1,4 @@
-package com.oflix.OFlix_back.global.entity.exception;
+package com.oflix.OFlix_back.global.exception;
 
 import lombok.Builder;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.oflix.OFlix_back.global.entity.exception;
+package com.oflix.OFlix_back.global.exception;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +20,7 @@ public class GlobalExceptionHandler {
         }
 
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
+        log.info(e.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 

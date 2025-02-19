@@ -1,7 +1,7 @@
 package com.oflix.OFlix_back.image.service;
 
-import com.oflix.OFlix_back.global.entity.exception.CustomException;
-import com.oflix.OFlix_back.global.entity.exception.ErrorCode;
+import com.oflix.OFlix_back.global.exception.CustomException;
+import com.oflix.OFlix_back.global.exception.ErrorCode;
 import com.oflix.OFlix_back.image.entity.Image;
 import com.oflix.OFlix_back.image.entity.ImageType;
 import com.oflix.OFlix_back.image.repository.ImageRepository;
@@ -9,14 +9,11 @@ import com.oflix.OFlix_back.movie.entity.Movie;
 import com.oflix.OFlix_back.movie.repository.MovieRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor

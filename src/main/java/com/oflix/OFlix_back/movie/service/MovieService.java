@@ -1,18 +1,12 @@
 package com.oflix.OFlix_back.movie.service;
 
-import ch.qos.logback.core.testUtil.MockInitialContext;
-import com.oflix.OFlix_back.category.entity.Category;
 import com.oflix.OFlix_back.category.repository.CategoryRepository;
-import com.oflix.OFlix_back.global.entity.exception.CustomException;
-import com.oflix.OFlix_back.global.entity.exception.ErrorCode;
-import com.oflix.OFlix_back.image.dto.RequestMainPosterDto;
-import com.oflix.OFlix_back.image.dto.RequestStillCutsDto;
+import com.oflix.OFlix_back.global.exception.CustomException;
+import com.oflix.OFlix_back.global.exception.ErrorCode;
 import com.oflix.OFlix_back.image.entity.Image;
-import com.oflix.OFlix_back.image.entity.ImageType;
 import com.oflix.OFlix_back.image.service.ImageService;
 import com.oflix.OFlix_back.movie.dto.RequestMovieDto;
 import com.oflix.OFlix_back.movie.dto.ResponseMovieDto;
-import com.oflix.OFlix_back.movie.dto.TotalResponseMovieDto;
 import com.oflix.OFlix_back.movie.entity.Movie;
 import com.oflix.OFlix_back.movie.repository.MovieRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,10 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
