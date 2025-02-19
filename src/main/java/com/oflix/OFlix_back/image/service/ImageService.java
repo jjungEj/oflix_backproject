@@ -62,11 +62,11 @@ public class ImageService {
                 .movie(movie)
                 .build();
 
+        //movie에 이미지 저장..
         String image = movie.addImage(main);
 
         //DB에 저장
         imageRepository.save(main);
-        //movie에 이미지 저장..
 
         System.out.println(image);
 
@@ -119,7 +119,7 @@ public class ImageService {
 
     //이미지 삭제
     //이미지 테이블에서도 삭제해야하니까 이미지 아이디를 받는게 맞을듯...
-    public  void deleteImage(Long imageId){
+    public void deleteImage(Long imageId){
         Image image = imageRepository.findById(imageId).orElseThrow(()->new CustomException(ErrorCode.IMAGE_NOT_FOUND));
 
         //이미지 파일명 받아오기
