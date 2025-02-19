@@ -23,6 +23,8 @@ public class Image {
 
     private String imagePath; //이미지 경로
 
+    private String thumbnailPath;
+
     //연관관계 설정
     @ManyToOne
     @JoinColumn(name="movie_id") //movieId?

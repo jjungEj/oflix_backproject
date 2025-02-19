@@ -98,11 +98,13 @@ public class MovieService {
         //영화 조회
         Movie movie = movieRepository.findById(movieId)
                 .orElseThrow(()-> new CustomException(ErrorCode.MOVIE_NOT_FOUND));
-        //관련 이미지 삭제
-        /*List<Image> images = movie.getImages();
+
+        //이미지 삭제
+        List<Image> images = movie.getImages();
         for (Image image : images) {
-            imageService.deleteImage(image);
-        }*/
+            imageService.deleteImage(image.getImageId());
+        }
+
         movieRepository.delete(movie);
     }
 
