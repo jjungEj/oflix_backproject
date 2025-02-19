@@ -1,21 +1,13 @@
 package com.oflix.OFlix_back.movie.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oflix.OFlix_back.image.dto.RequestMainPosterDto;
-import com.oflix.OFlix_back.image.dto.RequestStillCutsDto;
-import com.oflix.OFlix_back.movie.dto.TotalResponseMovieDto;
-import jakarta.validation.Valid;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.ui.Model;
 import com.oflix.OFlix_back.movie.dto.RequestMovieDto;
 import com.oflix.OFlix_back.movie.dto.ResponseMovieDto;
-import com.oflix.OFlix_back.movie.entity.Movie;
 import com.oflix.OFlix_back.movie.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,12 +18,17 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:5173")
 public class MovieApiController {
     private final MovieService movieService;
 
     @GetMapping("/movies")
-    public Page<ResponseMovieDto> findAllMovies(@PageableDefault(size = 10) Pageable pageable) {
-        return movieService.findAllMovies(pageable);
+    public Page<ResponseMovieDto> findAllMovies(
+            @RequestParam(defaultValue = "title") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction,
+            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        Pageable sortedPageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sortBy));
+        return movieService.findAllMovies(sortedPageable);
     }
 
     //특정 영화 정보 조회
@@ -79,6 +76,10 @@ public class MovieApiController {
     @GetMapping("/movies/search/title/{title}")
     public ResponseEntity<?> searchMovie(@PathVariable String title,
                                          @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        if (title == null || title.isEmpty()) {
+            return new ResponseEntity<>("Title is required", HttpStatus.BAD_REQUEST);
+        }
+
         Pageable pageable = PageRequest.of(page, size);
         Page<ResponseMovieDto> movies = movieService.searchTitle(title,pageable);
 

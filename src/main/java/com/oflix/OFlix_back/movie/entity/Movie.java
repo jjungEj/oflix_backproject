@@ -51,6 +51,10 @@ public class Movie {
     @Column(name = "genre", nullable = false)
     private Genre genre;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "movieStatus", nullable = false)
+    private MovieStatus movieStatus;
+
     //연관관계 설정
     @ManyToOne
     @JoinColumn(name = "category_Id")
@@ -61,6 +65,7 @@ public class Movie {
 
     public ResponseMovieDto toResponseMovieDto() {
         return ResponseMovieDto.builder()
+                .movieId(movieId)
                 .title(title)
                 .releaseDate(releaseDate)
                 .director(director)
@@ -69,6 +74,7 @@ public class Movie {
                 .nation(nation)
                 .viewAge(viewAge)
                 .genre(genre)
+                .movieStatus(movieStatus)
                 .build();
     }
 
@@ -80,26 +86,4 @@ public class Movie {
         image.setMovie(this);
         return images.toString();
     }
-
 }
-/*
-movie_id 영화 id Long
-title 영화제목 string
-releaseDate 영화 개봉일 string
-runtime 영화 러닝 타임 Datetime
-director 감독 string
-actors 출연진  string
-synopsis 줄거리  string
-
-many to one
-category_id Long
-
-one to many
-image_id    Long
-movie_schedules
-
-eunm
-nation
-viewAge
-genre
- */

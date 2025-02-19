@@ -2,10 +2,7 @@ package com.oflix.OFlix_back.movie.dto;
 
 import com.oflix.OFlix_back.image.dto.ResponseImageDto;
 import com.oflix.OFlix_back.image.entity.Image;
-import com.oflix.OFlix_back.movie.entity.Genre;
-import com.oflix.OFlix_back.movie.entity.Movie;
-import com.oflix.OFlix_back.movie.entity.Nation;
-import com.oflix.OFlix_back.movie.entity.ViewAge;
+import com.oflix.OFlix_back.movie.entity.*;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -30,6 +27,7 @@ public class ResponseMovieDto {
     private Genre genre;
     private Nation nation;
     private ViewAge viewAge;
+    private MovieStatus movieStatus;
 
     //순환참조 오류를 막기 위해 이미지의 dto를 받아옴
     private List<ResponseImageDto> images;
@@ -44,6 +42,7 @@ public class ResponseMovieDto {
         this.genre = movie.getGenre();
         this.nation = movie.getNation();
         this.viewAge = movie.getViewAge();
+        this.movieStatus = movie.getMovieStatus();
         this.images = movie.getImages().stream().map(ResponseImageDto::new).collect(Collectors.toList());
     }
 }

@@ -8,15 +8,18 @@ import com.oflix.OFlix_back.image.service.ImageService;
 import com.oflix.OFlix_back.movie.dto.RequestMovieDto;
 import com.oflix.OFlix_back.movie.dto.ResponseMovieDto;
 import com.oflix.OFlix_back.movie.entity.Movie;
+import com.oflix.OFlix_back.movie.entity.MovieStatus;
 import com.oflix.OFlix_back.movie.repository.MovieRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -27,19 +30,39 @@ public class MovieService {
     private final CategoryRepository categoryRepository;
     private final ImageService imageService;
 
+    @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
+    public void updateMovieStatuses() {
+        List<Movie> movies = movieRepository.findAll();
+        for (Movie movie : movies) {
+            if (movie.getReleaseDate().isBefore(LocalDate.now())) {
+                movie.setMovieStatus(MovieStatus.NOW_SHOWING); // 현재 날짜가 releaseDate 이전이면 NOW_SHOWING
+            } else {
+                movie.setMovieStatus(MovieStatus.COMING_SOON); // 그렇지 않으면 COMING_SOON
+            }
+            movieRepository.save(movie); // 상태 업데이트 후 저장
+        }
+    }
+
     @Transactional
     public Page<ResponseMovieDto> findAllMovies(Pageable pageable) {
+        Page<Movie> moviesPage = movieRepository.findAll(pageable);
+        log.debug("Total elements: {}", moviesPage.getTotalElements());
         return movieRepository.findAll(pageable)
                 .map(ResponseMovieDto::new);
     }
-
     //특정 영화 조회
     @Transactional
     public ResponseMovieDto findByMovie(Long movieId) {
         //영화 정보 가져오기
         Movie movie = movieRepository.findById(movieId).orElseThrow(()->new CustomException(ErrorCode.MOVIE_NOT_FOUND));
 
-        return new ResponseMovieDto(movie);
+        if (movie.getReleaseDate().isBefore(LocalDate.now())) {
+            movie.setMovieStatus(MovieStatus.NOW_SHOWING);
+        } else {
+            movie.setMovieStatus(MovieStatus.COMING_SOON);
+        }
+
+        return new ResponseMovieDto(movie); // 변경된 상태를 포함한 DTO 반환
     }
 
     //영화 추가
@@ -72,7 +95,7 @@ public class MovieService {
 
     @Transactional
     public ResponseMovieDto updateMovie(Long movieId, RequestMovieDto requestMovieDto) {
-        //영화 조회
+//영화 조회
         Movie movie = movieRepository.findById(movieId)
                 .orElseThrow(()-> new CustomException(ErrorCode.MOVIE_NOT_FOUND));
 
@@ -81,9 +104,14 @@ public class MovieService {
         movie.setDirector(requestMovieDto.getDirector());
         movie.setActors(requestMovieDto.getActors());
         movie.setSynopsis(requestMovieDto.getSynopsis());
+        movie.setNation(requestMovieDto.getNation());
+        movie.setGenre(requestMovieDto.getGenre());
+        movie.setViewAge(requestMovieDto.getViewAge());
+
 
         return movieRepository.save(movie).toResponseMovieDto();
     }
+
     @Transactional
     public void deleteMovie(Long movieId) {
         //영화 조회
@@ -102,6 +130,8 @@ public class MovieService {
     //제목 검색
     @Transactional
     public Page<ResponseMovieDto> searchTitle(String keyword, Pageable pageable) {
+        Page<Movie> movies = movieRepository.findByTitleContaining(keyword, pageable);
+        log.debug("Found {} movies for keyword '{}'", movies.getTotalElements(), keyword);
         return movieRepository.findByTitleContaining(keyword, pageable).map(ResponseMovieDto::new);
     }
     //배우 검색
@@ -115,31 +145,3 @@ public class MovieService {
         return movieRepository.findByDirectorContaining(keyword, pageable).map(ResponseMovieDto::new);
     }
 }
-
-    /*
-    //특정 영화 조회 이전 코드
-    //영화 정보랑 이미지(포스터, 스틸컷들)를 전부 조회함
-    @Transactional
-    public TotalResponseMovieDto findByMovie(Long movieId) {
-        //영화 정보 가져오기
-        Movie movie = movieRepository.findById(movieId).orElse(null);
-        /*
-        if (movie != null) {
-            return new ResponseMovieDto(movie);
-        }
-
-        //이미지 경로 가져오기
-        //메인이미지
-        String main = imageService.getMainImage(movieId);
-        //스틸컷 이미지
-        List<String> stillCuts = imageService.getStillCuts(movieId);
-        //영화정보, 이미지(메인포스터, 스틸컷) 경로를 모두 담은 dto를 생성
-        TotalResponseMovieDto responseMovie = TotalResponseMovieDto.builder()
-                .movie(movie)
-                .mainPosterPath(main)
-                .stillCutPaths(stillCuts)
-                .build();
-
-        return responseMovie;
-    }
-    */
