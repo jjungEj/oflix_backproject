@@ -25,6 +25,7 @@ public class RequestMovieDto {
     private MovieStatus movieStatus;
     private String runTime;
 
+
     public Movie toEntity(Category category) {
         return Movie.builder()
                 .build();

@@ -126,7 +126,6 @@ public class MovieService {
         return finalMovie;
 
     }
-
     @Transactional
     public void deleteMovie(Long movieId) {
         //영화 조회

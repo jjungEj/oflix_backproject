@@ -71,7 +71,6 @@ public class ImageService {
     }
 
     //스틸컷 업로드
-    public void uplpadStillCuts(List<MultipartFile> files, Movie movie){
         //반복되는 파일 경로와 이름을 받을 리스트
         List<String> path = new ArrayList<>();
         List<String> filenames = new ArrayList<>();
@@ -98,12 +97,8 @@ public class ImageService {
                     .build();
             //DB에 저장
             imageRepository.save(stilCut);
-
-            //이미지를 movie에 저장하는 로직 추가하기
-            movie.addImage(stilCut);
         }
 
-       // return path;
     }
 
     //경로에서 파일명을 추출하는 메서드
@@ -116,8 +111,7 @@ public class ImageService {
 
     //이미지 삭제
     //이미지 테이블에서도 삭제해야하니까 이미지 아이디를 받는게 맞을듯...
-    public void deleteImage(Long imageId){
-        Image image = imageRepository.findById(imageId).orElseThrow(()->new CustomException(ErrorCode.IMAGE_NOT_FOUND));
+    public  void deleteImage(Long imageId){
 
         //이미지 파일명 받아오기
         String imageName = image.getImageName();
