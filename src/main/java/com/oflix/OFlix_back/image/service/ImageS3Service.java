@@ -69,7 +69,6 @@ public class ImageS3Service {
 
         // s3에서 이미지 삭제
         amazonS3.deleteObject(new DeleteObjectRequest(bucket, decodeFile));
-        //amazonS3.deleteObject(new DeleteObjectRequest(bucket, imageName));
     }
 
     // 한글 디코딩 메서드

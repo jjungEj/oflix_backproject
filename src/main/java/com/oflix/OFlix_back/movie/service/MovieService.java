@@ -111,7 +111,6 @@ public class MovieService {
 
         return movieRepository.save(movie).toResponseMovieDto();
     }
-
     @Transactional
     public void deleteMovie(Long movieId) {
         //영화 조회

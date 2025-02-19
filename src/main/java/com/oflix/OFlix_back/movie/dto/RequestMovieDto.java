@@ -23,7 +23,6 @@ public class RequestMovieDto {
     private ViewAge viewAge;
     private MovieStatus movieStatus;
 
-
     public Movie toEntity(Category category) {
         return Movie.builder()
                 .build();
