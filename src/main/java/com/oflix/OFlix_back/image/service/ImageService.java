@@ -1,5 +1,7 @@
 package com.oflix.OFlix_back.image.service;
 
+import com.oflix.OFlix_back.global.entity.exception.CustomException;
+import com.oflix.OFlix_back.global.entity.exception.ErrorCode;
 import com.oflix.OFlix_back.image.entity.Image;
 import com.oflix.OFlix_back.image.entity.ImageType;
 import com.oflix.OFlix_back.image.repository.ImageRepository;
@@ -28,8 +30,7 @@ public class ImageService {
     //TODO : 경로만 반환해야할지, 이미지 객체를 반환해야할지?
     // NOTE : 일단 경로만 반환하게 하고 추후 필요에 따라 수정하기
     public String getMainImage(Long movieId){
-        Movie movie = movieRepository.findById(movieId).orElseThrow(()->new IllegalArgumentException("존재하지 않는 영화입니다."));
-
+        Movie movie = movieRepository.findById(movieId).orElseThrow(()->new CustomException(ErrorCode.MOVIE_NOT_FOUND));
         String mainPoster = imageRepository.findByMainPoster(movie, ImageType.MAIN);
 
         return mainPoster;
@@ -37,34 +38,43 @@ public class ImageService {
 
     //특정 영화의 스틸컷들 반환
     public List<String> getStillCuts(Long movieId){
-        Movie movie = movieRepository.findById(movieId).orElseThrow(()->new IllegalArgumentException("존재하지 않는 영화입니다."));
-
+        Movie movie = movieRepository.findById(movieId).orElseThrow(()->new CustomException(ErrorCode.MOVIE_NOT_FOUND));
         List<String> stillCuts = imageRepository.findByStillCuts(movie, ImageType.STILL);
 
         return stillCuts;
     }
 
     //메인이미지 업로드
-    public String uploadMainImage(MultipartFile file, Movie movie){
+    public void uploadMainImage(MultipartFile file, Movie movie){
         //이미지를 s3에 저장하고 경로를 반환받음
         String imagePath = imageS3Service.uploadS3Image(file);
         //반환받은 경로에서 파일명을 잘라냄
         String fileName = getFileName(imagePath);
+        //썸네일 경로..
+        String thumbnailPath = imageS3Service.converToThumbnail(file);
+
         //이미지 객체에 저장
         Image main = Image.builder()
                 .imagePath(imagePath)
                 .imageName(fileName)
                 .imageType(ImageType.MAIN)
+                .thumbnailPath(thumbnailPath)
                 .movie(movie)
                 .build();
+
+        String image = movie.addImage(main);
+
         //DB에 저장
         imageRepository.save(main);
+        //movie에 이미지 저장..
 
-        return imagePath;
+        System.out.println(image);
+
+      //  return imagePath;
     }
 
     //스틸컷 업로드
-    public List<String> uplpadStillCuts(List<MultipartFile> files, Movie movie){
+    public void uplpadStillCuts(List<MultipartFile> files, Movie movie){
         //반복되는 파일 경로와 이름을 받을 리스트
         List<String> path = new ArrayList<>();
         List<String> filenames = new ArrayList<>();
@@ -91,9 +101,12 @@ public class ImageService {
                     .build();
             //DB에 저장
             imageRepository.save(stilCut);
+
+            //이미지를 movie에 저장하는 로직 추가하기
+            movie.addImage(stilCut);
         }
 
-        return path;
+       // return path;
     }
 
     //경로에서 파일명을 추출하는 메서드
@@ -107,7 +120,7 @@ public class ImageService {
     //이미지 삭제
     //이미지 테이블에서도 삭제해야하니까 이미지 아이디를 받는게 맞을듯...
     public  void deleteImage(Long imageId){
-        Image image = imageRepository.findById(imageId).orElseThrow(()->new IllegalArgumentException("존재하지 않는 이미지입니다"));
+        Image image = imageRepository.findById(imageId).orElseThrow(()->new CustomException(ErrorCode.IMAGE_NOT_FOUND));
 
         //이미지 파일명 받아오기
         String imageName = image.getImageName();

@@ -16,6 +16,8 @@ public class ResponseImageDto {
 
     private String imagePath; //이미지 경로
 
+    private String thumbnailPath; //썸네일 경로
+
     //순환참조 오류를 막기 위해 movie의 id만 받아옴
     private Long movieId;
 
@@ -24,6 +26,7 @@ public class ResponseImageDto {
         this.imageType = image.getImageType();
         this.imageName = image.getImageName();
         this.imagePath = image.getImagePath();
+        this.thumbnailPath = image.getThumbnailPath();
         this.movieId = image.getMovie().getMovieId();
     }
 }

@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,10 +52,8 @@ public class MovieService {
     }
 
     //영화 추가
-    //TODO : 조금 더 고민
-    // NOTE : 반환형을 void로 해도 되지 않을까..?
-    @Transactional
-    public TotalResponseMovieDto createMovie(RequestMovieDto requestMovieDto, MultipartFile main, List<MultipartFile> still) {
+    //@Transactional
+    public ResponseMovieDto createMovie(RequestMovieDto requestMovieDto, MultipartFile main, List<MultipartFile> still) {
         //1. 영화 정보 저장
         Movie movie = Movie.builder()
                 .title(requestMovieDto.getTitle())
@@ -62,22 +61,22 @@ public class MovieService {
                 .director(requestMovieDto.getDirector())
                 .actors(requestMovieDto.getActors())
                 .synopsis(requestMovieDto.getSynopsis())
+                .genre(requestMovieDto.getGenre())
+                .nation(requestMovieDto.getNation())
+                .viewAge(requestMovieDto.getViewAge())
                 .build();
         Movie savedMovie = movieRepository.save(movie);
 
         //2. 이미지 저장
         //메인포스터 경로
-        String mainPath = imageService.uploadMainImage(main, savedMovie);
-        //스틸컷 경로 리스트
-        List<String> stillPaths = imageService.uplpadStillCuts(still, savedMovie);
-        //반환 Dto 생성(영화정보랑 포스터들까지 다 합친거)
-        TotalResponseMovieDto totalMovie = TotalResponseMovieDto.builder()
-                .movie(savedMovie)
-                .mainPosterPath(mainPath)
-                .stillCutPaths(stillPaths)
-                .build();
+        imageService.uploadMainImage(main, savedMovie);
 
-        return totalMovie;
+        //스틸컷 경로 리스트
+        imageService.uplpadStillCuts(still, savedMovie);
+
+        ResponseMovieDto finalMovie = new ResponseMovieDto(savedMovie);
+
+        return finalMovie;
     }
 
     @Transactional
@@ -107,16 +106,16 @@ public class MovieService {
         movieRepository.delete(movie);
     }
 
+    //제목 검색
     @Transactional
     public Page<ResponseMovieDto> searchTitle(String keyword, Pageable pageable) {
         return movieRepository.findByTitleContaining(keyword, pageable).map(ResponseMovieDto::new);
     }
-
+    //배우 검색
     @Transactional
     public Page<ResponseMovieDto> searchActors(String keyword, Pageable pageable) {
         return movieRepository.findByActorsContaining(keyword, pageable).map(ResponseMovieDto::new);
     }
-
     //감독 검색
     @Transactional
     public Page<ResponseMovieDto> searchDirector(String keyword, Pageable pageable) {

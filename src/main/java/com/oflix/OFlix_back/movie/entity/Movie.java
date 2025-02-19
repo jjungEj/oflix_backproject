@@ -57,7 +57,7 @@ public class Movie {
     @JoinColumn(name = "category_Id")
     private Category category;
 
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     List<Image> images = new ArrayList<>();
 
     public ResponseMovieDto toResponseMovieDto() {
@@ -72,6 +72,16 @@ public class Movie {
                 .genre(genre)
                 .build();
     }
+
+    public String addImage(Image image) {
+        if(this.images==null){
+            this.images = new ArrayList<>();
+        }
+        images.add(image);
+        image.setMovie(this);
+        return images.toString();
+    }
+
 }
 /*
 movie_id 영화 id Long

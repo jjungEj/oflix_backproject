@@ -25,17 +25,17 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/movies")
+@RequestMapping("/api")
 public class MovieApiController {
     private final MovieService movieService;
 
-    @GetMapping
+    @GetMapping("/movies")
     public Page<ResponseMovieDto> findAllMovies(@PageableDefault(size = 10) Pageable pageable) {
         return movieService.findAllMovies(pageable);
     }
 
     //특정 영화 정보 조회
-    @GetMapping("/{movieId}")
+    @GetMapping("/movies/{movieId}")
     public ResponseEntity<ResponseMovieDto> findByMovie(@PathVariable Long movieId) {
         ResponseMovieDto movie = movieService.findByMovie(movieId);
         if (movie != null) {
@@ -46,17 +46,20 @@ public class MovieApiController {
     }
 
     //영화 추가
-    @PostMapping
+    @PostMapping("/movies")
     //이미지dto 쓰면 오류나서 MultipartFile로 변경함
-    public ResponseEntity<TotalResponseMovieDto> createMovie(@RequestPart("movie") RequestMovieDto requestMovieDto,
+    public ResponseEntity<ResponseMovieDto> createMovie(@RequestPart("movie") RequestMovieDto requestMovieDto,
                                                              @RequestPart("main") MultipartFile main,
                                                              @RequestPart("still") List<MultipartFile> still) {
-        TotalResponseMovieDto createdMovie = movieService.createMovie(requestMovieDto, main, still);
-        return new ResponseEntity<>(createdMovie, HttpStatus.CREATED);
+        ResponseMovieDto createdMovie = movieService.createMovie(requestMovieDto, main, still);
+
+        System.out.println("영화 "+createdMovie);
+
+        return ResponseEntity.ok(createdMovie);
     }
 
 
-    @PutMapping("/{id}")
+    @PutMapping("/movies/{id}")
     public ResponseEntity<ResponseMovieDto> updateMovie(@PathVariable Long id, @RequestBody RequestMovieDto requestMovieDto) {
         ResponseMovieDto updatedMovie = movieService.updateMovie(id, requestMovieDto);
         if (updatedMovie != null) {
@@ -66,14 +69,14 @@ public class MovieApiController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/movies/{id}")
     public ResponseEntity<Void> deleteMovie(@PathVariable Long id) {
         movieService.deleteMovie(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-
-    @GetMapping("/search/title/{title}")
+    //제목 검색
+    @GetMapping("/movies/search/title/{title}")
     public ResponseEntity<?> searchMovie(@PathVariable String title,
                                          @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
         Pageable pageable = PageRequest.of(page, size);
@@ -83,7 +86,7 @@ public class MovieApiController {
     }
 
     //배우 검색
-    @GetMapping("/search/actors/{actors}")
+    @GetMapping("/movies/search/actors/{actors}")
     public ResponseEntity<?> searchActors(@PathVariable String actors,
                                           @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
         Pageable pageable = PageRequest.of(page, size);
@@ -93,7 +96,7 @@ public class MovieApiController {
     }
 
     //감독 검색
-    @GetMapping("/search/director/{director}")
+    @GetMapping("/movies/search/director/{director}")
     public ResponseEntity<?> searchDirector(@PathVariable String director,
                                             @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
         Pageable pageable = PageRequest.of(page, size);
