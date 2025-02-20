@@ -16,7 +16,6 @@ import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173") // React CORS 설정
 @RequestMapping("/api")
 @RestController
 public class CinemaApiController {
