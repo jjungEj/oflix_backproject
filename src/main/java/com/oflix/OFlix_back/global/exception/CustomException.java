@@ -1,6 +1,5 @@
-package com.oflix.OFlix_back.global.entity.exception;
+package com.oflix.OFlix_back.global.exception;
 
-import jakarta.persistence.Access;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

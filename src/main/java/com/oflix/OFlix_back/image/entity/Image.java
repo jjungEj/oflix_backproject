@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name="image")
+@Table(name="images")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,6 +22,8 @@ public class Image {
     private String imageName; //이미지 이름
 
     private String imagePath; //이미지 경로
+
+    private String thumbnailPath;
 
     //연관관계 설정
     @ManyToOne
