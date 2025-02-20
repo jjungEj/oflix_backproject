@@ -1,6 +1,7 @@
 package com.oflix.OFlix_back.login.controller;
 
 import com.oflix.OFlix_back.login.dto.CustomUserDetails;
+import com.oflix.OFlix_back.login.dto.LoginResponse;
 import com.oflix.OFlix_back.login.dto.UserDTO;
 import com.oflix.OFlix_back.login.dto.JoinResponseDTO;
 import com.oflix.OFlix_back.login.service.UserService;
@@ -19,13 +20,8 @@ public class UserController {
 
 
     @GetMapping("/userInfo")
-    public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        if (userDetails == null) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
-        String user = userDetails.getUsername();
-        return ResponseEntity.ok(user);
+    public ResponseEntity<LoginResponse> getUserInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return userService.getUserInfo(userDetails);
     }
 
 
