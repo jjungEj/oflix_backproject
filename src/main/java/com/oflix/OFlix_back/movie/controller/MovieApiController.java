@@ -22,6 +22,7 @@ import java.util.List;
 public class MovieApiController {
     private final MovieService movieService;
 
+    //영화 전체 조회
     @GetMapping("/movies")
     public Page<ResponseMovieDto> findAllMovies(
             @RequestParam(defaultValue = "title") String sortBy,
