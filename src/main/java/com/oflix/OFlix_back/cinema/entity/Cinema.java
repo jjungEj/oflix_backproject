@@ -13,5 +13,13 @@ public class Cinema {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+
+    @Column(name = "location")
     private String location;
+
+    @Column(nullable = false, length = 50)
+    private String region;  // 대분류 지역
+
+
 }
+
