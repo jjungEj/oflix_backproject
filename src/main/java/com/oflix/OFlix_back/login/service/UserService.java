@@ -1,5 +1,7 @@
 package com.oflix.OFlix_back.login.service;
 
+import com.oflix.OFlix_back.login.dto.CustomUserDetails;
+import com.oflix.OFlix_back.login.dto.LoginResponse;
 import com.oflix.OFlix_back.login.dto.UserDTO;
 import com.oflix.OFlix_back.login.dto.JoinResponseDTO;
 import com.oflix.OFlix_back.login.entity.User;
@@ -47,6 +49,20 @@ public class UserService {
                         user.getPhoneNumber())
         );
     }
+
+
+    public ResponseEntity<LoginResponse> getUserInfo(CustomUserDetails userDetails) {
+        if (userDetails == null) {
+            LoginResponse errorResponse = new LoginResponse(401, "UNAUTHORIZED", "Unauthorized", null, null);
+            return ResponseEntity.status(401).body(errorResponse);
+        }
+
+        LoginResponse response = new LoginResponse(200, "SUCCESS", "User info retrieved successfully",
+                userDetails.getUsername(), userDetails.getAuthorities().iterator().next().getAuthority());
+
+        return ResponseEntity.ok(response);
+    }
+
 
 
     public ResponseEntity<JoinResponseDTO> getUserByUsername(String username) {
