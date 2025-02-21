@@ -22,7 +22,7 @@ public class PaymentApiController {
         log.info("############ paymentId {} ########", requestDto.toString());
         log.info("############ paymentId {} ########", requestDto.getPaymentId());
         log.info("############ resultCode {} ########", requestDto.getResultCode());
-//        paymentService.savePayment(requestDto);
+        paymentService.savePayment(requestDto);
         Map<String, Object> response = new HashMap<>();
         response.put("data", "저장성공");
         return ResponseEntity.ok(response);
