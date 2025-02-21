@@ -4,6 +4,7 @@ import com.oflix.OFlix_back.cinema.entity.Cinema;
 import com.oflix.OFlix_back.cinema.entity.Seat;
 import com.oflix.OFlix_back.cinema.entity.TheaterHall;
 import com.oflix.OFlix_back.login.entity.User;
+import com.oflix.OFlix_back.movie.entity.Movie;
 import com.oflix.OFlix_back.reservations.entity.Reservation;
 import com.oflix.OFlix_back.schedule.entity.MovieSchedule;
 import jakarta.persistence.*;
@@ -23,16 +24,27 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "seat_id", nullable = false)
-    private Seat seat;
+    private String paymentId;
+
+    private String resultCode;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "movie_schedule_id", nullable = false)
+    private MovieSchedule movieSchedule;
+
+    private String seatNumber;
+
+    private String ticketType;
+
+    private String paymentStatus = "Success";
 
     private String paymentMethod;
-    private String paymentStatus = "pending";
-    private Double amount;
-    private LocalDateTime paymentTime;
+
+    private Double Amount;
+//  TODO : 클라이언트 측에서 user 정보를 보내줘야 저장할 수 있음
+//    @ManyToOne
+//    @JoinColumn(name = "user_id", nullable = false)
+//    private User user;
+
+    private LocalDateTime paymentTime = LocalDateTime.now();
 }
