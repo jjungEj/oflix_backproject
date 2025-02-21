@@ -77,4 +77,12 @@ public class Movie {
                 .movieStatus(movieStatus)
                 .build();
     }
+    public String addImage(Image image) {
+        if(this.images==null){
+            this.images = new ArrayList<>();
+        }
+        images.add(image);
+        image.setMovie(this);
+        return images.toString();
+    }
 }
