@@ -36,8 +36,11 @@ public class Movie {
     @Column(name = "actors")
     private String actors;
 
-    @Column(name = "synopsis")
+    @Column(name = "synopsis", length = 1000)
     private String synopsis;
+
+    @Column(name = "runTime")
+    private String runTime; // 러닝타임
 
     @Enumerated(EnumType.STRING)
     @Column(name = "nation", nullable = false)
@@ -48,8 +51,13 @@ public class Movie {
     private ViewAge viewAge;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "genre", nullable = false)
-    private Genre genre;
+    @Column(name = "genre1", nullable = false)
+    private Genre genre1; //장르1
+
+    @Enumerated(EnumType.STRING)
+    @Column(name="genre2", nullable = false)
+    private Genre genre2; //장르2
+
 
     @Enumerated(EnumType.STRING)
     @Column(name = "movieStatus", nullable = false)
@@ -73,7 +81,8 @@ public class Movie {
                 .synopsis(synopsis)
                 .nation(nation)
                 .viewAge(viewAge)
-                .genre(genre)
+                .genre1(genre1)
+                .genre2(genre2)
                 .movieStatus(movieStatus)
                 .build();
     }
