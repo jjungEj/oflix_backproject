@@ -52,16 +52,17 @@ public class UserService {
 
 
     public ResponseEntity<LoginResponse> getUserInfo(CustomUserDetails userDetails) {
-        if (userDetails == null) {
-            LoginResponse errorResponse = new LoginResponse(401, "UNAUTHORIZED", "Unauthorized", null, null);
-            return ResponseEntity.status(401).body(errorResponse);
-        }
+        String username = (userDetails != null) ? userDetails.getUsername() : null;
+        String authority = (userDetails != null && !userDetails.getAuthorities().isEmpty())
+                ? userDetails.getAuthorities().iterator().next().getAuthority()
+                : null;
 
         LoginResponse response = new LoginResponse(200, "SUCCESS", "User info retrieved successfully",
-                userDetails.getUsername(), userDetails.getAuthorities().iterator().next().getAuthority());
+                username, authority);
 
         return ResponseEntity.ok(response);
     }
+
 
 
 

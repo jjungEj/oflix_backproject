@@ -18,10 +18,12 @@ public class RequestMovieDto {
     private String synopsis;
     private Long categoryId;
 
-    private Genre genre;
+    private Genre genre1;
+    private Genre genre2;
     private Nation nation;
     private ViewAge viewAge;
     private MovieStatus movieStatus;
+    private String runTime;
 
     public Movie toEntity(Category category) {
         return Movie.builder()

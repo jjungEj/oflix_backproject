@@ -41,8 +41,8 @@ public class MovieScheduleService {
                     dto.setCinemaName(schedule.getTheaterHall().getCinema().getName());
                     dto.setCinemaName(schedule.getTheaterHall().getCinema().getLocation());
 
-                    List<Seat> totalSeats = seatRepository.findByTheaterHall(schedule.getTheaterHall());
-                    List<Seat> remainingSeats = seatRepository.findByTheaterHallAndIsAvailable(schedule.getTheaterHall(), true);
+                    List<Seat> totalSeats = seatRepository.findByMovieSchedule(schedule);
+                    List<Seat> remainingSeats = seatRepository.findByMovieScheduleAndIsAvailable(schedule, true);
                     dto.setTotalSeats(totalSeats.size());
                     dto.setRemainingSeats(remainingSeats);
 

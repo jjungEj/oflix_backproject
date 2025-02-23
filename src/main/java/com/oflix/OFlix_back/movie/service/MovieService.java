@@ -75,9 +75,12 @@ public class MovieService {
                 .director(requestMovieDto.getDirector())
                 .actors(requestMovieDto.getActors())
                 .synopsis(requestMovieDto.getSynopsis())
-                .genre(requestMovieDto.getGenre())
+                .genre1(requestMovieDto.getGenre1())
+                .genre2(requestMovieDto.getGenre2())
                 .nation(requestMovieDto.getNation())
                 .viewAge(requestMovieDto.getViewAge())
+                .movieStatus(requestMovieDto.getMovieStatus())
+                .runTime(requestMovieDto.getRunTime())
                 .build();
         Movie savedMovie = movieRepository.save(movie);
 
@@ -105,7 +108,8 @@ public class MovieService {
         movie.setActors(requestMovieDto.getActors());
         movie.setSynopsis(requestMovieDto.getSynopsis());
         movie.setNation(requestMovieDto.getNation());
-        movie.setGenre(requestMovieDto.getGenre());
+        movie.setGenre1(requestMovieDto.getGenre1());
+        movie.setGenre2(requestMovieDto.getGenre2());
         movie.setViewAge(requestMovieDto.getViewAge());
 
 

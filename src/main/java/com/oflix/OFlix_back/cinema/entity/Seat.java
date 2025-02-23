@@ -18,9 +18,9 @@ public class Seat {
     @JoinColumn(name = "movie_schedule_id", nullable = false)
     private MovieSchedule movieSchedule;
 
-    @ManyToOne
-    @JoinColumn(name = "theater_hall_id", nullable = false)
-    private TheaterHall theaterHall;
+//    @ManyToOne
+//    @JoinColumn(name = "theater_hall_id", nullable = false)
+//    private TheaterHall theaterHall;
 
     private String seatNumber;
     private Boolean isAvailable;
