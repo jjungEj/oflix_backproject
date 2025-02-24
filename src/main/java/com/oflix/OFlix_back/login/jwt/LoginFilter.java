@@ -74,7 +74,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String role = auth.getAuthority();
 
         //토큰 생성
-        String access = jwtUtil.createJwt("access", username, role, 600000L);
+        String access = jwtUtil.createJwt("access", username, role, 3600000L);
         String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
 
         addRefreshEntity(username, refresh, 86400000L);
@@ -82,7 +82,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         //응답 설정
         //response.setHeader("Authorization", "Bearer " + access);
 
-        response.addCookie(createCookie("access", access, 600));
+        response.addCookie(createCookie("access", access, 3600));
         response.addCookie(createCookie("refresh", refresh , 86400));
         response.setStatus(HttpStatus.OK.value());
 
