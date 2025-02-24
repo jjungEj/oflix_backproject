@@ -12,4 +12,5 @@ import java.util.List;
 public interface SeatRepository extends JpaRepository<Seat, Long> {
     List<Seat> findByMovieScheduleAndIsAvailable(MovieSchedule movieSchedule, Boolean isAvailable);
     List<Seat> findByMovieSchedule(MovieSchedule movieSchedule);
+    Seat findByMovieScheduleAndSeatNumber(MovieSchedule movieSchedule, String seatNumber);
 }

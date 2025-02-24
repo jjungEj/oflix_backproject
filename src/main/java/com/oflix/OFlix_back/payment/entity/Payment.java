@@ -36,8 +36,6 @@ public class Payment {
 
     private String ticketType;
 
-    private String paymentStatus = "Success";
-
     private String paymentMethod;
 
     private Double Amount;
