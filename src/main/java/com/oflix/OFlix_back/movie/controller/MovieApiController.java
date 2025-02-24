@@ -58,8 +58,10 @@ public class MovieApiController {
 
 
     @PutMapping("/movies/{id}")
-    public ResponseEntity<ResponseMovieDto> updateMovie(@PathVariable Long id, @RequestBody RequestMovieDto requestMovieDto) {
-        ResponseMovieDto updatedMovie = movieService.updateMovie(id, requestMovieDto);
+    public ResponseEntity<ResponseMovieDto> updateMovie(@PathVariable Long id, @RequestPart RequestMovieDto requestMovieDto,
+                                                        @RequestPart("main") MultipartFile main,
+                                                        @RequestPart("still") List<MultipartFile> still) {
+        ResponseMovieDto updatedMovie = movieService.updateMovie(id, requestMovieDto, main, still);
         if (updatedMovie != null) {
             return new ResponseEntity<>(updatedMovie, HttpStatus.OK);
         } else {
