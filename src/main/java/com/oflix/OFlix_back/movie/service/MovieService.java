@@ -97,8 +97,8 @@ public class MovieService {
     }
 
     @Transactional
-    public ResponseMovieDto updateMovie(Long movieId, RequestMovieDto requestMovieDto) {
-//영화 조회
+    public ResponseMovieDto updateMovie(Long movieId, RequestMovieDto requestMovieDto, MultipartFile main, List<MultipartFile> still) {
+        //영화 조회
         Movie movie = movieRepository.findById(movieId)
                 .orElseThrow(()-> new CustomException(ErrorCode.MOVIE_NOT_FOUND));
 
@@ -112,8 +112,19 @@ public class MovieService {
         movie.setGenre2(requestMovieDto.getGenre2());
         movie.setViewAge(requestMovieDto.getViewAge());
 
+        for(Image image : movie.getImages()) {
+            imageService.deleteImage(image.getImageId());
+        }
 
-        return movieRepository.save(movie).toResponseMovieDto();
+        movie.getImages().clear();
+
+        imageService.uploadMainImage(main, movie);
+        imageService.uplpadStillCuts(still, movie);
+
+        ResponseMovieDto finalMovie = new ResponseMovieDto(movie);
+
+        return finalMovie;
+
     }
 
     @Transactional
