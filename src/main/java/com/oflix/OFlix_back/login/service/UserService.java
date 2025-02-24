@@ -29,7 +29,7 @@ public class UserService {
     public ResponseEntity<JoinResponseDTO> signUpProcess(UserDTO userDTO) {
         if (userRepository.existsByUsername(userDTO.getUsername())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new JoinResponseDTO("Username already exists", null, null, null));
+                    .body(new JoinResponseDTO("Username already exists", null, null, null, null));
         }
 
         User user = new User();
@@ -46,7 +46,9 @@ public class UserService {
                 new JoinResponseDTO("User created successfully",
                         user.getUsername(),
                         user.getNickname(),
-                        user.getPhoneNumber())
+                        user.getPhoneNumber(),
+                        user.getBirthDate()
+                )
         );
     }
 
@@ -71,7 +73,7 @@ public class UserService {
 
         if (user.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new JoinResponseDTO("User not found", null, null, null));
+                    .body(new JoinResponseDTO("User not found", null, null, null, null));
         }
 
         User foundUser = user.get();
@@ -79,9 +81,11 @@ public class UserService {
                 new JoinResponseDTO("User found",
                         foundUser.getUsername(),
                         foundUser.getNickname(),
-                        foundUser.getPhoneNumber())
+                        foundUser.getPhoneNumber(),
+                        foundUser.getBirthDate()) // 생년월일 추가
         );
     }
+
 
     /**
      * 회원 정보 수정 (Update)
@@ -91,7 +95,7 @@ public class UserService {
 
         if (optionalUser.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new JoinResponseDTO("User not found", null, null, null));
+                    .body(new JoinResponseDTO("User not found", null, null, null, null));
         }
 
         User user = optionalUser.get();
@@ -109,7 +113,8 @@ public class UserService {
                 new JoinResponseDTO("User updated successfully",
                         user.getUsername(),
                         user.getNickname(),
-                        user.getPhoneNumber())
+                        user.getPhoneNumber(),
+                        user.getBirthDate())
         );
     }
 
