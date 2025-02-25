@@ -15,6 +15,5 @@ public class JoinResponseDTO {
     private String username;
     private String nickname;
     private String phoneNumber;
-    private LocalDate birthDate;
 }
 

@@ -32,7 +32,4 @@ public class User extends BaseEntity {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Column(name = "birth_date")
-    private LocalDate birthDate;
-
 }

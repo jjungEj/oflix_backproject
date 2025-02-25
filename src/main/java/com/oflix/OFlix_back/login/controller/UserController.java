@@ -1,9 +1,6 @@
 package com.oflix.OFlix_back.login.controller;
 
-import com.oflix.OFlix_back.login.dto.CustomUserDetails;
-import com.oflix.OFlix_back.login.dto.LoginResponse;
-import com.oflix.OFlix_back.login.dto.UserDTO;
-import com.oflix.OFlix_back.login.dto.JoinResponseDTO;
+import com.oflix.OFlix_back.login.dto.*;
 import com.oflix.OFlix_back.login.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +17,7 @@ public class UserController {
 
 
     @GetMapping("/userInfo")
-    public ResponseEntity<LoginResponse> getUserInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<UserInfoResponse> getUserInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return userService.getUserInfo(userDetails);
     }
 
@@ -30,18 +27,12 @@ public class UserController {
         return userService.signUpProcess(userDTO);
     }
 
-    @GetMapping("/{username}")
-    public ResponseEntity<JoinResponseDTO> getUser(@PathVariable String username) {
-        return userService.getUserByUsername(username);
+    @PutMapping("/update")
+    public ResponseEntity<UserInfoResponse> updateUser(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                       @RequestBody UpdateUserDTO updateUserDTO) {
+        return userService.updateUser(userDetails, updateUserDTO);
     }
 
-    @PutMapping("/{username}")
-    public ResponseEntity<JoinResponseDTO> updateUser(
-            @PathVariable String username,
-            @RequestBody UserDTO updateDTO
-    ) {
-        return userService.updateUser(username, updateDTO);
-    }
 
     @DeleteMapping("/{username}")
     public ResponseEntity<String> deleteUser(@PathVariable String username) {
