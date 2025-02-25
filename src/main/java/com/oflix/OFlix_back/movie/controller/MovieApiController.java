@@ -1,5 +1,6 @@
 package com.oflix.OFlix_back.movie.controller;
 
+import com.oflix.OFlix_back.image.service.ImageService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import com.oflix.OFlix_back.movie.dto.RequestMovieDto;
@@ -21,6 +22,7 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:5173")
 public class MovieApiController {
     private final MovieService movieService;
+    private final ImageService imageService;
 
     //영화 전체 조회
     @GetMapping("/movies")
@@ -59,8 +61,8 @@ public class MovieApiController {
 
     @PutMapping("/movies/{id}")
     public ResponseEntity<ResponseMovieDto> updateMovie(@PathVariable Long id, @RequestPart RequestMovieDto requestMovieDto,
-                                                        @RequestPart("main") MultipartFile main,
-                                                        @RequestPart("still") List<MultipartFile> still) {
+                                                        @RequestPart(value="main", required = false) MultipartFile main,
+                                                        @RequestPart(value="still", required = false) List<MultipartFile> still) {
         ResponseMovieDto updatedMovie = movieService.updateMovie(id, requestMovieDto, main, still);
         if (updatedMovie != null) {
             return new ResponseEntity<>(updatedMovie, HttpStatus.OK);
@@ -107,4 +109,14 @@ public class MovieApiController {
         Page<ResponseMovieDto>movies = movieService.searchDirector(director, pageable);
         return new ResponseEntity<>(movies, HttpStatus.OK);
     }
+
+    //배너 등록
+    //따로 페이지x
+    @PostMapping("/movies/uploadBanner/{movieId}")
+    public ResponseEntity<ResponseMovieDto> uploadBanner(@PathVariable Long movieId, MultipartFile file) {
+        imageService.uploadBanner(file, movieId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }
