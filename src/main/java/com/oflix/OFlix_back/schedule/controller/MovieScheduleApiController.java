@@ -23,7 +23,7 @@ public class MovieScheduleApiController {
     @GetMapping("/schedules")
     public ResponseEntity<?> schedules() {
         List<MovieScheduleResponseDto> movieSchedules = movieScheduleService.findAllSchedules();
-        log.debug("movieSchedules.toString() : {}", movieSchedules.toString());
+
         return ResponseEntity.ok(movieSchedules);
     }
 

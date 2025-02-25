@@ -2,6 +2,8 @@ package com.oflix.OFlix_back.payment.service;
 
 import com.oflix.OFlix_back.cinema.entity.Seat;
 import com.oflix.OFlix_back.cinema.repository.SeatRepository;
+import com.oflix.OFlix_back.login.entity.User;
+import com.oflix.OFlix_back.login.repository.UserRepository;
 import com.oflix.OFlix_back.payment.dto.RequestPaymentDto;
 import com.oflix.OFlix_back.payment.entity.Payment;
 import com.oflix.OFlix_back.payment.repository.PaymentRepository;
@@ -20,6 +22,7 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final MovieScheduleRepository movieScheduleRepository;
     private final SeatRepository seatRepository;
+    private final UserRepository userRepository;
 
     public String savePayment(RequestPaymentDto requestDto) {
         MovieSchedule movieSchedule = movieScheduleRepository.findById(requestDto.getScheduleId())
@@ -27,6 +30,13 @@ public class PaymentService {
 
         if (requestDto.getTickets().isEmpty()) {
             throw new IllegalArgumentException("No tickets provided for payment.");
+        }
+
+        User user = userRepository.findById(Integer.valueOf(requestDto.getUserId()))
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + requestDto.getUserId()));
+
+        if(requestDto.getUserId().isEmpty()) {
+            throw new IllegalArgumentException("No userId provided for payment.");
         }
         // 티켓 정보 저장
         for (RequestPaymentDto.Ticket ticket : requestDto.getTickets()) {
@@ -38,6 +48,7 @@ public class PaymentService {
             payment.setTicketType(ticket.getTicketType().getName());
             payment.setAmount((double) ticket.getTicketType().getPrice());
             payment.setPaymentMethod(requestDto.getPaymentMethod());
+            payment.setUser(user);
 
             paymentRepository.save(payment);
 

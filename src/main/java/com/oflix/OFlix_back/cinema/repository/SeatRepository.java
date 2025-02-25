@@ -1,5 +1,6 @@
 package com.oflix.OFlix_back.cinema.repository;
 
+import com.oflix.OFlix_back.cinema.dto.ResponseSeatDto;
 import com.oflix.OFlix_back.cinema.entity.Seat;
 import com.oflix.OFlix_back.cinema.entity.TheaterHall;
 import com.oflix.OFlix_back.schedule.entity.MovieSchedule;
