@@ -4,6 +4,7 @@ import com.oflix.OFlix_back.category.repository.CategoryRepository;
 import com.oflix.OFlix_back.global.exception.CustomException;
 import com.oflix.OFlix_back.global.exception.ErrorCode;
 import com.oflix.OFlix_back.image.entity.Image;
+import com.oflix.OFlix_back.image.entity.ImageType;
 import com.oflix.OFlix_back.image.service.ImageService;
 import com.oflix.OFlix_back.movie.dto.RequestMovieDto;
 import com.oflix.OFlix_back.movie.dto.ResponseMovieDto;
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -112,19 +114,40 @@ public class MovieService {
         movie.setGenre2(requestMovieDto.getGenre2());
         movie.setViewAge(requestMovieDto.getViewAge());
 
-        for(Image image : movie.getImages()) {
-            imageService.deleteImage(image.getImageId());
+        //사용자가 이미지를 업로드하지 않으면 기존 이미지 그대로 사용, 업로드하면 새로운 이미지로 대체
+        //메인이미지가 업로드 되었으면
+        if (main != null) {
+            // 기존 메인 이미지 삭제
+            List<Image> mainImages = movie.getImages().stream()
+                    .filter(image -> image.getImageType() == ImageType.MAIN)
+                    .collect(Collectors.toList());
+
+            for (Image image : mainImages) {
+                imageService.deleteImage(image.getImageId());
+            }
+            movie.getImages().removeAll(mainImages);  // 리스트에서 제거
+
+            // 새로운 메인 이미지 업로드
+            imageService.uploadMainImage(main, movie);
         }
 
-        movie.getImages().clear();
+        //스틸컷들이 업로드 되었으면
+        if (still != null && !still.isEmpty()) {
+            // 기존 스틸컷 삭제
+            List<Image> stillImages = movie.getImages().stream()
+                    .filter(image -> image.getImageType() == ImageType.STILL)
+                    .collect(Collectors.toList());
 
-        imageService.uploadMainImage(main, movie);
-        imageService.uplpadStillCuts(still, movie);
+            for (Image image : stillImages) {
+                imageService.deleteImage(image.getImageId());
+            }
+            movie.getImages().removeAll(stillImages);  // 리스트에서 제거
 
-        ResponseMovieDto finalMovie = new ResponseMovieDto(movie);
+            // 새로운 스틸컷 업로드
+            imageService.uplpadStillCuts(still, movie);
+        }
 
-        return finalMovie;
-
+        return new ResponseMovieDto(movie);
     }
     @Transactional
     public void deleteMovie(Long movieId) {
