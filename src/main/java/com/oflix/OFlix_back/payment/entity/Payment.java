@@ -39,10 +39,10 @@ public class Payment {
     private String paymentMethod;
 
     private Double Amount;
-//  TODO : 클라이언트 측에서 user 정보를 보내줘야 저장할 수 있음
-//    @ManyToOne
-//    @JoinColumn(name = "user_id", nullable = false)
-//    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     private LocalDateTime paymentTime = LocalDateTime.now();
 }

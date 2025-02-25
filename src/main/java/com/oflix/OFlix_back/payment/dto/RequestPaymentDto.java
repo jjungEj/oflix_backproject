@@ -1,7 +1,5 @@
 package com.oflix.OFlix_back.payment.dto;
 
-import com.oflix.OFlix_back.movie.entity.Movie;
-import com.oflix.OFlix_back.schedule.entity.MovieSchedule;
 import lombok.*;
 
 import java.util.List;
@@ -19,8 +17,12 @@ public class RequestPaymentDto {
     private List<Ticket> tickets;
     private String totalAmount;
     private String paymentMethod;
+    private String userId;
 
-    // 내부 Ticket 클래스
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @ToString
     public static class Ticket {
         private int seatIndex;
         private String seatLabel;
@@ -45,6 +47,10 @@ public class RequestPaymentDto {
         }
     }
 
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @ToString
     public static class TicketType {
         private String id;
         private String name;
