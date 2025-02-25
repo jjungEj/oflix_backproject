@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @RestController
@@ -70,10 +71,12 @@ public class ReissueController {
 
         String username = jwtUtil.getUsername(refresh);
         String role = jwtUtil.getRole(refresh);
+        String nickname = jwtUtil.getNickname(refresh);
+        String phoneNumber = jwtUtil.getPhoneNumber(refresh);
 
         //make new JWT
-        String newAccess = jwtUtil.createJwt("access", username, role, 600000L);
-        String newRefresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
+        String newAccess = jwtUtil.createJwt("access", username, role, nickname, phoneNumber,600000L);
+        String newRefresh = jwtUtil.createJwt("refresh", username, role, nickname, phoneNumber,86400000L);
 
         refreshRepository.deleteByRefresh(refresh);
         addRefreshEntity(username, newRefresh, 86400000L);

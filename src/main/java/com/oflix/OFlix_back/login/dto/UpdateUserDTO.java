@@ -1,24 +1,16 @@
 package com.oflix.OFlix_back.login.dto;
 
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
-
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
-public class UserDTO {
-
+public class UpdateUserDTO {
     private String nickname;
-
-    private String username;
-
-    private String password;
-
-    private String role;
-
     private String phoneNumber;
+
 
 }

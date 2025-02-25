@@ -1,24 +1,22 @@
 package com.oflix.OFlix_back.login.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDate;
 
-@Setter
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor
-public class UserDTO {
-
-    private String nickname;
-
+public class UserInfoResponse {
+    private int status;
+    private String errorCode;
+    private String message;
     private String username;
-
-    private String password;
-
     private String role;
-
+    private String nickname;
     private String phoneNumber;
 
 }
+

@@ -1,6 +1,7 @@
 package com.oflix.OFlix_back.login.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oflix.OFlix_back.login.dto.CustomUserDetails;
 import com.oflix.OFlix_back.login.dto.ErrorResponse;
 import com.oflix.OFlix_back.login.dto.LoginDTO;
 import com.oflix.OFlix_back.login.dto.LoginResponse;
@@ -73,16 +74,21 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
 
-        //토큰 생성
-        String access = jwtUtil.createJwt("access", username, role, 600000L);
-        String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String nickname = userDetails.getNickname();
+        String phoneNumber = userDetails.getPhoneNumber();
+
+
+        // 토큰 생성
+        String access = jwtUtil.createJwt("access", username, role, nickname, phoneNumber,  3600000L);
+        String refresh = jwtUtil.createJwt("refresh", username, role, nickname, phoneNumber,  86400000L);
 
         addRefreshEntity(username, refresh, 86400000L);
 
         //응답 설정
         //response.setHeader("Authorization", "Bearer " + access);
 
-        response.addCookie(createCookie("access", access, 600));
+        response.addCookie(createCookie("access", access, 3600));
         response.addCookie(createCookie("refresh", refresh , 86400));
         response.setStatus(HttpStatus.OK.value());
 
@@ -92,7 +98,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         // ✅ JSON 응답 추가
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonResponse = objectMapper.writeValueAsString(
-                new LoginResponse(HttpStatus.OK.value(), "LOGIN_SUCCESS", "로그인이 성공적으로 처리되었습니다.", username, role)
+                new LoginResponse(HttpStatus.OK.value(), "LOGIN_SUCCESS", "로그인이 성공적으로 처리되었습니다.", username, role, nickname, phoneNumber)
         );
         response.getWriter().write(jsonResponse);
         response.getWriter().flush();

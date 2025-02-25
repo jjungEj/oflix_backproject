@@ -16,6 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDate;
 
 @RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
@@ -37,8 +38,8 @@ public class JWTFilter extends OncePerRequestFilter {
         try {
             jwtUtil.isExpired(accessToken);
         } catch (ExpiredJwtException e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().print("access token expired");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "access token expired");
+
             return;
         }
 
@@ -53,12 +54,17 @@ public class JWTFilter extends OncePerRequestFilter {
         // username, role 값을 획득
         String username = jwtUtil.getUsername(accessToken);
         String role = jwtUtil.getRole(accessToken);
+        String nickname = jwtUtil.getNickname(accessToken);
+        String phoneNumber = jwtUtil.getPhoneNumber(accessToken);
 
-        System.out.println(username);
+
+
 
         User userEntity = new User();
         userEntity.setUsername(username);
         userEntity.setRole(role);
+        userEntity.setNickname(nickname);
+        userEntity.setPhoneNumber(phoneNumber);
         CustomUserDetails customUserDetails = new CustomUserDetails(userEntity);
 
         Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
