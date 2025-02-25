@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,4 +15,7 @@ public class LoginResponse {
     private String message;
     private String username;
     private String role;
+    private String nickname;
+    private String phoneNumber;
+
 }
