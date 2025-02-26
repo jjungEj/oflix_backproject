@@ -19,12 +19,9 @@ public class PaymentApiController {
 
     @PostMapping("/payment/complete")
     public ResponseEntity<?> complete(@RequestBody RequestPaymentDto requestDto) {
-        log.info("############ paymentId {} ########", requestDto.toString());
-        log.info("############ paymentId {} ########", requestDto.getPaymentId());
-        log.info("############ resultCode {} ########", requestDto.getResultCode());
         paymentService.savePayment(requestDto);
         Map<String, Object> response = new HashMap<>();
-        response.put("data", "저장성공");
+        response.put("message", "complete");
         return ResponseEntity.ok(response);
     }
 }
