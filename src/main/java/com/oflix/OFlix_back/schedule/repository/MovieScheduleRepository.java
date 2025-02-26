@@ -12,6 +12,6 @@ import java.util.List;
 @Repository
 public interface MovieScheduleRepository extends JpaRepository<MovieSchedule, Long> {
     List<MovieSchedule> findByStartTimeGreaterThanOrderByStartTimeAsc(LocalDateTime currentTime);
-    @Query("SELECT m FROM MovieSchedule m WHERE m.theaterHall.TheaterHallId = :theaterHallId")
+    @Query("SELECT m FROM MovieSchedule m WHERE m.theaterHall.id = :theaterHallId")
     List<MovieSchedule> findByTheaterHallId(@Param("theaterHallId") Long theaterHallId);
 }
