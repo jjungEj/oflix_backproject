@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -50,4 +51,31 @@ public class MovieScheduleService {
                 })
                 .toList();
     }
+
+    public List<MovieScheduleResponseDto> findSchedulesByTheater(Long theaterHallId) {
+        List<MovieSchedule> schedules = movieScheduleRepository.findByTheaterHallId(theaterHallId);
+
+        log.info("Found {} schedules for theaterHallId={}", schedules.size(), theaterHallId);
+
+        return schedules.stream()
+                .map(schedule -> {
+                    List<Seat> remainingSeats = seatRepository.findByMovieScheduleAndIsAvailable(schedule, true);
+                    int totalSeats = seatRepository.findByMovieSchedule(schedule).size();
+
+                    return new MovieScheduleResponseDto(
+                            schedule.getMovieScheduleId(),  // ✅ 스케줄 ID
+                            schedule.getStartTime().toString(),  // ✅ 시작 시간
+                            schedule.getEndTime().toString(),  // ✅ 종료 시간
+                            schedule.getMovie().getTitle(),  // ✅ 영화 제목
+                            totalSeats,  // ✅ 총 좌석 수
+                            remainingSeats,  // ✅ 남은 좌석 리스트
+                            schedule.getTheaterHall().getCinema().getId(),  // ✅ 영화관 ID
+                            schedule.getTheaterHall().getCinema().getName(),  // ✅ 영화관 이름
+                            schedule.getTheaterHall().getCinema().getLocation()  // ✅ 영화관 주소
+                    );
+                })
+                .collect(Collectors.toList());
+    }
+
+
 }

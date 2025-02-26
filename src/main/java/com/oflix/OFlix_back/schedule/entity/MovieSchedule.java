@@ -34,3 +34,4 @@ public class MovieSchedule {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
+
