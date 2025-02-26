@@ -18,8 +18,9 @@ public class ResponseReservationsDto {
     private String cinemaName;
     private String theaterHall;
 
-    public ResponseReservationsDto(Long userId, Long movieScheduleId, String seatNumber, String status,
+    public ResponseReservationsDto(Long id, Long userId, Long movieScheduleId, String seatNumber, String status,
                                    Long movieId, String title, String cinemaName, String theaterHall) {
+        this.id = id;
         this.userId = userId;
         this.movieScheduleId = movieScheduleId;
         this.seatNumber = seatNumber;
