@@ -12,6 +12,8 @@ public enum ErrorCode {
     //영화 에러
     MOVIE_NOT_FOUND(HttpStatus.NOT_FOUND,"MOVIE_NOT_FOUND","영화가 존재하지 않습니다."),
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND,"CATEGORY_NOT_FOUND","카테고리가 존재하지 않습니다."),
+    MOVIE_HAS_SCHEDULE(HttpStatus.BAD_REQUEST,"MOVIE_HAS_SCHEDULE" ,"스케줄에 등록된 영화는 삭제할 수 없습니다."),
+
     //서버 에러
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", "예기치 않은 오류가 발생했습니다.");
     private final HttpStatus httpStatus;

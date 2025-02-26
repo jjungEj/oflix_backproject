@@ -11,6 +11,7 @@ import com.oflix.OFlix_back.movie.dto.ResponseMovieDto;
 import com.oflix.OFlix_back.movie.entity.Movie;
 import com.oflix.OFlix_back.movie.entity.MovieStatus;
 import com.oflix.OFlix_back.movie.repository.MovieRepository;
+import com.oflix.OFlix_back.schedule.repository.MovieScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -31,6 +32,7 @@ public class MovieService {
     private final MovieRepository movieRepository;
     private final CategoryRepository categoryRepository;
     private final ImageService imageService;
+    private final MovieScheduleRepository movieScheduleRepository;
 
     @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
     public void updateMovieStatuses() {
@@ -113,6 +115,8 @@ public class MovieService {
         movie.setGenre1(requestMovieDto.getGenre1());
         movie.setGenre2(requestMovieDto.getGenre2());
         movie.setViewAge(requestMovieDto.getViewAge());
+        movie.setMovieStatus(requestMovieDto.getMovieStatus());
+        movie.setRunTime(requestMovieDto.getRunTime());
 
         //사용자가 이미지를 업로드하지 않으면 기존 이미지 그대로 사용, 업로드하면 새로운 이미지로 대체
         //메인이미지가 업로드 되었으면
@@ -155,6 +159,9 @@ public class MovieService {
         Movie movie = movieRepository.findById(movieId)
                 .orElseThrow(()-> new CustomException(ErrorCode.MOVIE_NOT_FOUND));
 
+        if (movieScheduleRepository.existsByMovie(movie)) {
+            throw new CustomException(ErrorCode.MOVIE_HAS_SCHEDULE);
+        }
         //이미지 삭제
         List<Image> images = movie.getImages();
         for (Image image : images) {

@@ -55,7 +55,7 @@ public class Movie {
     private Genre genre1; //장르1
 
     @Enumerated(EnumType.STRING)
-    @Column(name="genre2", nullable = false)
+    @Column(name="genre2")
     private Genre genre2; //장르2
 
 
@@ -70,6 +70,9 @@ public class Movie {
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     List<Image> images = new ArrayList<>();
+
+    @OneToMany(mappedBy = "movie")
+    private List<MovieSchedule> movieSchedules = new ArrayList<>();
 
     public ResponseMovieDto toResponseMovieDto() {
         return ResponseMovieDto.builder()
