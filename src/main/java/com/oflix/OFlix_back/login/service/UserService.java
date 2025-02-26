@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
@@ -105,15 +106,11 @@ public class UserService {
     }
 
 
-    public ResponseEntity<String> deleteUser(String username) {
-        Optional<User> optionalUser = userRepository.findByUsername(username);
+    @Transactional
+    public void deleteUser(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
-        if (optionalUser.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("{\"message\": \"User not found\"}");
-        }
-
-        userRepository.delete(optionalUser.get());
-        return ResponseEntity.ok("{\"message\": \"User deleted successfully\"}");
+        userRepository.delete(user);
     }
 }
