@@ -18,4 +18,6 @@ public class TheaterHall {
     private Cinema cinema;
 
     private String name;
+
 }
+

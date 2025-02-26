@@ -21,7 +21,6 @@ public class MovieScheduleResponseDto {
 
     private Integer totalSeats;         // 영화관 총 좌석 수
     private List<ResponseSeatDto> remainingSeats; // 잔여 석
-//    private List<Seat> remainingSeats; // 잔여 석
     private Long cinemaId;              // 영화관 id
     private String cinemaName;          // 영화관 이름
     private String cinemaLocation;      // 영화관 주소
