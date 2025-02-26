@@ -34,9 +34,10 @@ public class UserController {
     }
 
 
-    @DeleteMapping("/{username}")
-    public ResponseEntity<String> deleteUser(@PathVariable String username) {
-        return userService.deleteUser(username);
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteUser(@RequestParam String username) {
+        userService.deleteUser(username);
+        return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
     }
 }
 
