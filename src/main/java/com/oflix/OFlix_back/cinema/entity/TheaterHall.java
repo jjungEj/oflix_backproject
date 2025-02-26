@@ -11,8 +11,7 @@ import lombok.*;
 public class TheaterHall {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long TheaterHallId;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "cinema_id", nullable = false)
