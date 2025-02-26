@@ -11,9 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +35,7 @@ public class ReservationsApiController {
 
         List<ResponseReservationsDto> reservationDtos = reservations.stream()
                 .map(reservation -> new ResponseReservationsDto(
+                        reservation.getId(),
                         reservation.getUser().getId(),
                         reservation.getMovieSchedule().getMovieScheduleId(),
                         reservation.getSeat().getSeatNumber(),
@@ -49,5 +48,11 @@ public class ReservationsApiController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(reservationDtos);
+    }
+
+    @DeleteMapping("/cancelReservation/{id}")
+    public ResponseEntity<?> cancelReservation(@PathVariable("id") Long id) {
+        reservationsService.deleteById(id);
+        return ResponseEntity.ok("Reservation cancelled: " + id);
     }
 }
