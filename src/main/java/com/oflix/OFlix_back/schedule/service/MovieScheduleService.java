@@ -71,23 +71,29 @@ public class MovieScheduleService {
 
         return schedules.stream()
                 .map(schedule -> {
+                    // 사용 가능한 좌석 조회
                     List<Seat> remainingSeats = seatRepository.findByMovieScheduleAndIsAvailable(schedule, true);
                     int totalSeats = seatRepository.findByMovieSchedule(schedule).size();
 
+                    // Seat 엔티티 -> ResponseSeatDto 변환
+                    List<ResponseSeatDto> responseSeats = remainingSeats.stream()
+                            .map(Seat::toResponeSeatDto) // ✅ Seat 클래스의 변환 메서드 사용
+                            .collect(Collectors.toList());
+
                     return new MovieScheduleResponseDto(
-                            schedule.getMovieScheduleId(),
-                            schedule.getStartTime().toString(),
-                            schedule.getEndTime().toString(),
-                            schedule.getMovie().getTitle(),
-                            totalSeats,
-                            remainingSeats,
-                            schedule.getTheaterHall().getCinema().getId(),
-                            schedule.getTheaterHall().getCinema().getName(),
-                            schedule.getTheaterHall().getCinema().getLocation()
+                            schedule.getMovieScheduleId(),          // ✅ 스케줄 ID (Long)
+                            schedule.getStartTime().toString(),     // ✅ 시작 시간 (String)
+                            schedule.getEndTime().toString(),       // ✅ 종료 시간 (String)
+                            schedule.getMovie().getTitle(),         // ✅ 영화 제목 (String)
+                            null,                                   // ✅ 포스터 URL (현재 `Movie` 엔티티에 없음 → 기본값 설정)
+                            totalSeats,                              // ✅ 총 좌석 수 (Integer)
+                            responseSeats,                           // ✅ 잔여 좌석 (List<ResponseSeatDto>)
+                            schedule.getTheaterHall().getCinema().getId(),       // ✅ 영화관 ID (Long)
+                            schedule.getTheaterHall().getCinema().getName(),     // ✅ 영화관 이름 (String)
+                            schedule.getTheaterHall().getCinema().getLocation()  // ✅ 영화관 주소 (String)
                     );
                 })
                 .collect(Collectors.toList());
     }
-
 
 }
