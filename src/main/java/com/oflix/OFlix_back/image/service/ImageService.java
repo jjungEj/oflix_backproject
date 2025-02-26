@@ -67,7 +67,7 @@ public class ImageService {
 
         System.out.println(image);
 
-      //  return imagePath;
+        //  return imagePath;
     }
 
     //스틸컷 업로드
@@ -103,8 +103,35 @@ public class ImageService {
             movie.addImage(stilCut);
         }
 
-       // return path;
+        // return path;
     }
+
+    //배너이미지
+    public String uploadBanner(MultipartFile file, /*Movie movie*/ Long movieId){
+        //이미지를 s3에 저장하고 경로를 반환받음
+        String imagePath = imageS3Service.uploadS3Image(file);
+        //반환받은 경로에서 파일명을 잘라냄
+        String fileName = getFileName(imagePath);
+
+        Movie movie = movieRepository.findById(movieId).orElseThrow();
+
+        //이미지 객체에 저장
+        Image banner = Image.builder()
+                .imagePath(imagePath)
+                .imageName(fileName)
+                .imageType(ImageType.BANNER)
+                .movie(movie)
+                .build();
+
+        //movie에 이미지 저장..
+        String image = movie.addImage(banner);
+
+        //DB에 저장
+        imageRepository.save(banner);
+
+        return banner.getImagePath();
+    }
+
 
     //경로에서 파일명을 추출하는 메서드
     public String getFileName(String imageUrl){
