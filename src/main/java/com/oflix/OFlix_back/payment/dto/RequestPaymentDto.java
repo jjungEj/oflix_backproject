@@ -17,7 +17,7 @@ public class RequestPaymentDto {
     private List<Ticket> tickets;
     private String totalAmount;
     private String paymentMethod;
-    private String userId;
+    private String useremail;
 
     @Getter
     @Setter

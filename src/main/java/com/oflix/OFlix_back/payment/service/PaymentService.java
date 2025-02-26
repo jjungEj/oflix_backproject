@@ -7,6 +7,8 @@ import com.oflix.OFlix_back.login.repository.UserRepository;
 import com.oflix.OFlix_back.payment.dto.RequestPaymentDto;
 import com.oflix.OFlix_back.payment.entity.Payment;
 import com.oflix.OFlix_back.payment.repository.PaymentRepository;
+import com.oflix.OFlix_back.reservations.entity.Reservation;
+import com.oflix.OFlix_back.reservations.repository.ReservationsRepository;
 import com.oflix.OFlix_back.schedule.entity.MovieSchedule;
 import com.oflix.OFlix_back.schedule.repository.MovieScheduleRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ public class PaymentService {
     private final MovieScheduleRepository movieScheduleRepository;
     private final SeatRepository seatRepository;
     private final UserRepository userRepository;
+    private final ReservationsRepository reservationsRepository;
 
     public String savePayment(RequestPaymentDto requestDto) {
         MovieSchedule movieSchedule = movieScheduleRepository.findById(requestDto.getScheduleId())
@@ -32,12 +35,9 @@ public class PaymentService {
             throw new IllegalArgumentException("No tickets provided for payment.");
         }
 
-        User user = userRepository.findById(Integer.valueOf(requestDto.getUserId()))
-                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + requestDto.getUserId()));
+        User user = userRepository.findByUsername(requestDto.getUseremail())
+                .orElseThrow(() -> new IllegalArgumentException("User not found with userEmail: " + requestDto.getUseremail()));
 
-        if(requestDto.getUserId().isEmpty()) {
-            throw new IllegalArgumentException("No userId provided for payment.");
-        }
         // 티켓 정보 저장
         for (RequestPaymentDto.Ticket ticket : requestDto.getTickets()) {
             Payment payment = new Payment();
@@ -49,7 +49,6 @@ public class PaymentService {
             payment.setAmount((double) ticket.getTicketType().getPrice());
             payment.setPaymentMethod(requestDto.getPaymentMethod());
             payment.setUser(user);
-
             paymentRepository.save(payment);
 
             if(requestDto.getResultCode().equals("Success")) {
@@ -57,7 +56,15 @@ public class PaymentService {
 
                 seat.setIsAvailable(false);
 
+                Reservation reservation = new Reservation();
+
+                reservation.setSeat(seat);
+                reservation.setUser(user);
+                reservation.setMovieSchedule(movieSchedule);
+                reservation.setStatus(requestDto.getResultCode());
+
                 seatRepository.save(seat);
+                reservationsRepository.save(reservation);
             }
 
         }
