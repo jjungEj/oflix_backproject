@@ -24,4 +24,6 @@ public class MovieScheduleResponseDto {
     private Long cinemaId;              // 영화관 id
     private String cinemaName;          // 영화관 이름
     private String cinemaLocation;      // 영화관 주소
+
+    private String theaterHall; //상영관
 }

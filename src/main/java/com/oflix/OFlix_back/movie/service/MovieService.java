@@ -54,6 +54,20 @@ public class MovieService {
         return movieRepository.findAll(pageable)
                 .map(ResponseMovieDto::new);
     }
+
+
+    //스케쥴에 사용할 전체영화조회
+    public List<ResponseMovieDto> findAllMoviesBySchedule() {
+        List<ResponseMovieDto> movies = movieRepository.findAll().stream().map(ResponseMovieDto::new).collect(Collectors.toList());
+
+        return movies;
+    }
+
+    public Movie findMovieById(Long id) {
+        return movieRepository.findById(id).orElse(null);
+    }
+
+
     //특정 영화 조회
     @Transactional
     public ResponseMovieDto findByMovie(Long movieId) {

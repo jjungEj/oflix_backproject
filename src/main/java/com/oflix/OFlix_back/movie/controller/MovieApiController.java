@@ -1,6 +1,7 @@
 package com.oflix.OFlix_back.movie.controller;
 
 import com.oflix.OFlix_back.image.service.ImageService;
+import com.oflix.OFlix_back.movie.entity.Movie;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import com.oflix.OFlix_back.movie.dto.RequestMovieDto;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,6 +35,16 @@ public class MovieApiController {
         Pageable sortedPageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sortBy));
         return movieService.findAllMovies(sortedPageable);
     }
+
+    //영화스케쥴에 사용할 영화전체조회
+    @Transactional
+    @GetMapping("/AllMovies")
+    public ResponseEntity<?> findAllMoviesBySchedule(){
+        List<ResponseMovieDto> movies = movieService.findAllMoviesBySchedule();
+
+        return new ResponseEntity<>(movies, HttpStatus.OK);
+    }
+
 
     //특정 영화 정보 조회
     @GetMapping("/movies/{movieId}")

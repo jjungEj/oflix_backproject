@@ -1,5 +1,6 @@
 package com.oflix.OFlix_back.schedule.repository;
 
+import com.oflix.OFlix_back.cinema.entity.TheaterHall;
 import com.oflix.OFlix_back.movie.entity.Movie;
 import com.oflix.OFlix_back.schedule.entity.MovieSchedule;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,4 +17,8 @@ public interface MovieScheduleRepository extends JpaRepository<MovieSchedule, Lo
     boolean existsByMovie(Movie movie);
     @Query("SELECT m FROM MovieSchedule m WHERE m.theaterHall.id = :theaterHallId")
     List<MovieSchedule> findByTheaterHallId(@Param("theaterHallId") Long theaterHallId);
+
+    @Query("SELECT ms FROM MovieSchedule ms WHERE ms.theaterHall.cinema.id = :cinemaId")
+    List<MovieSchedule> findByCinemaId(@Param("cinemaId") Long cinemaId);
+
 }
