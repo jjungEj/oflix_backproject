@@ -41,6 +41,12 @@ public class CinemaApiController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/Allcinemas")
+    public ResponseEntity<?> getCinemas(){
+        List<Cinema> cinemas = cinemaService.findAll();
+        return ResponseEntity.ok(cinemas);
+    }
+
 
     @GetMapping("cinemas/search")
     public ResponseEntity<List<Cinema>> getCinemasByRegion(@RequestParam String region) {

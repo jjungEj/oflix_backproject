@@ -16,4 +16,5 @@ public interface MovieScheduleRepository extends JpaRepository<MovieSchedule, Lo
     boolean existsByMovie(Movie movie);
     @Query("SELECT m FROM MovieSchedule m WHERE m.theaterHall.id = :theaterHallId")
     List<MovieSchedule> findByTheaterHallId(@Param("theaterHallId") Long theaterHallId);
+
 }

@@ -2,8 +2,15 @@ package com.oflix.OFlix_back.schedule.service;
 
 import com.oflix.OFlix_back.cinema.dto.ResponseSeatDto;
 import com.oflix.OFlix_back.cinema.entity.Seat;
+import com.oflix.OFlix_back.cinema.entity.TheaterHall;
 import com.oflix.OFlix_back.cinema.repository.SeatRepository;
+import com.oflix.OFlix_back.cinema.repository.TheaterHallRepository;
+import com.oflix.OFlix_back.cinema.service.TheaterHallService;
 import com.oflix.OFlix_back.image.service.ImageService;
+import com.oflix.OFlix_back.movie.dto.ResponseMovieDto;
+import com.oflix.OFlix_back.movie.entity.Movie;
+import com.oflix.OFlix_back.movie.service.MovieService;
+import com.oflix.OFlix_back.schedule.dto.MovieScheduleRequestDto;
 import com.oflix.OFlix_back.schedule.dto.MovieScheduleResponseDto;
 import com.oflix.OFlix_back.schedule.entity.MovieSchedule;
 import com.oflix.OFlix_back.schedule.repository.MovieScheduleRepository;
@@ -12,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,12 +27,16 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+
 public class MovieScheduleService {
     private final MovieScheduleRepository movieScheduleRepository;
     private final SeatRepository seatRepository;
     private final ImageService imageService;
+    private final TheaterHallService theaterHallService;
+    private final TheaterHallRepository theaterHallRepository;
+    private final MovieService movieService;
 
+    @Transactional(readOnly = true)
     public List<MovieScheduleResponseDto> findAllSchedules() {
         List<MovieSchedule> schedules = movieScheduleRepository.findByStartTimeGreaterThanOrderByStartTimeAsc(LocalDateTime.now());
 
@@ -63,6 +75,48 @@ public class MovieScheduleService {
                 })
                 .toList();
     }
+
+
+
+    //스케쥴 추가
+    public void createMovieSchedule(MovieScheduleRequestDto dto) {
+        TheaterHall theaterHall = theaterHallRepository.findById(dto.getTheaterHallId()).orElseThrow(()->new IllegalArgumentException("상영관x"));
+        //ResponseMovieDto movie = movieService.findByMovie(dto.getMovieId());
+        Movie movie2 = movieService.findMovieById(dto.getMovieId());
+
+        LocalDateTime startTime = dto.getStartTime();
+        LocalDateTime endTime = startTime.plusMinutes(Integer.parseInt(movie2.getRunTime()));
+
+        MovieSchedule schedule = new MovieSchedule();
+        schedule.setTheaterHall(theaterHall);
+        schedule.setMovie(movie2);
+        schedule.setStartTime(startTime);
+        schedule.setEndTime(endTime);
+
+        movieScheduleRepository.save(schedule);
+
+        createSeatsForSchedule(schedule);
+
+    }
+
+    //좌석 추가
+    private void createSeatsForSchedule(MovieSchedule schedule) {
+        TheaterHall theaterHall = schedule.getTheaterHall();
+        int seatCount = 32; // 기본 100석 (상영관 크기에 따라 다르게 설정 가능)
+
+        for (int i = 1; i <= seatCount; i++) {
+            Seat seat = Seat.builder()
+                    .movieSchedule(schedule)
+                    .theaterHall(theaterHall)
+                    .seatNumber(/*"A" + */String.valueOf(i)) // A1, A2, A3... 형태로 좌석 생성
+                    .isAvailable(true)
+                    .build();
+            seatRepository.save(seat);
+        }
+    }
+
+
+
 
     public List<MovieScheduleResponseDto> findSchedulesByTheater(Long theaterHallId) {
         List<MovieSchedule> schedules = movieScheduleRepository.findByTheaterHallId(theaterHallId);
