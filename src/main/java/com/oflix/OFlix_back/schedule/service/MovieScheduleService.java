@@ -12,6 +12,7 @@ import com.oflix.OFlix_back.movie.entity.Movie;
 import com.oflix.OFlix_back.movie.service.MovieService;
 import com.oflix.OFlix_back.schedule.dto.MovieScheduleRequestDto;
 import com.oflix.OFlix_back.schedule.dto.MovieScheduleResponseDto;
+import com.oflix.OFlix_back.schedule.dto.ResponseMovieScheduleDto;
 import com.oflix.OFlix_back.schedule.entity.MovieSchedule;
 import com.oflix.OFlix_back.schedule.repository.MovieScheduleRepository;
 import lombok.RequiredArgsConstructor;
@@ -76,12 +77,13 @@ public class MovieScheduleService {
                 .toList();
     }
 
-    public List<MovieScheduleResponseDto> findMovieScheduleByCinema(Long cinemaId) {
+    //dto ResponseMovieScheduleDto로 수정함 바꾸지말것
+    public List<ResponseMovieScheduleDto> findMovieScheduleByCinema(Long cinemaId) {
         List<MovieSchedule> schedules = movieScheduleRepository.findByCinemaId(cinemaId);
 
         return schedules.stream()
                 .map(schedule -> {
-                    MovieScheduleResponseDto dto = new MovieScheduleResponseDto();
+                    ResponseMovieScheduleDto dto = new ResponseMovieScheduleDto();
 
                     String postUrl = imageService.getMainImage(schedule.getMovie().getMovieId());
 
@@ -89,7 +91,7 @@ public class MovieScheduleService {
                     dto.setStartTime(schedule.getStartTime().toString());
                     dto.setEndTime(schedule.getEndTime().toString());
                     dto.setTitle(schedule.getMovie().getTitle());
-                    dto.setTheaterHall(schedule.getTheaterHall().getName());
+                   // dto.setTheaterHall(schedule.getTheaterHall().getName());
 
                     dto.setPosterUrl(postUrl);
                     dto.setCinemaId(schedule.getTheaterHall().getCinema().getId());
@@ -158,7 +160,7 @@ public class MovieScheduleService {
     public void deleteSchedule(Long scheduleId) {
         MovieSchedule schedule = movieScheduleRepository.findById(scheduleId).orElseThrow(()-> new IllegalArgumentException("스케줄 없음"));
 
-        MovieScheduleResponseDto dto = new MovieScheduleResponseDto();
+        ResponseMovieScheduleDto dto = new ResponseMovieScheduleDto();
         String postUrl = imageService.getMainImage(schedule.getMovie().getMovieId());
 
         dto.setScheduleId(schedule.getMovieScheduleId());
