@@ -76,6 +76,45 @@ public class MovieScheduleService {
                 .toList();
     }
 
+    public List<MovieScheduleResponseDto> findMovieScheduleByCinema(Long cinemaId) {
+        List<MovieSchedule> schedules = movieScheduleRepository.findByCinemaId(cinemaId);
+
+        return schedules.stream()
+                .map(schedule -> {
+                    MovieScheduleResponseDto dto = new MovieScheduleResponseDto();
+
+                    String postUrl = imageService.getMainImage(schedule.getMovie().getMovieId());
+
+                    dto.setScheduleId(schedule.getMovieScheduleId());
+                    dto.setStartTime(schedule.getStartTime().toString());
+                    dto.setEndTime(schedule.getEndTime().toString());
+                    dto.setTitle(schedule.getMovie().getTitle());
+                    dto.setTheaterHall(schedule.getTheaterHall().getName());
+
+                    dto.setPosterUrl(postUrl);
+                    dto.setCinemaId(schedule.getTheaterHall().getCinema().getId());
+                    dto.setCinemaName(schedule.getTheaterHall().getCinema().getName());
+                    dto.setCinemaLocation(schedule.getTheaterHall().getCinema().getLocation());
+
+                    List<ResponseSeatDto> totalSeats = seatRepository.findByMovieSchedule(schedule)
+                            .stream()
+                            .map(Seat::toResponeSeatDto)
+                            .collect(Collectors.toList());
+
+                    List<ResponseSeatDto> remainingSeats = seatRepository.findByMovieScheduleAndIsAvailable(schedule, true)
+                            .stream()
+                            .map(Seat::toResponeSeatDto)
+                            .collect(Collectors.toList());
+
+
+
+                    dto.setTotalSeats(totalSeats.size());
+                    dto.setRemainingSeats(remainingSeats);
+
+                    return dto;
+                })
+                .toList();
+    }
 
 
     //스케쥴 추가
@@ -113,6 +152,50 @@ public class MovieScheduleService {
                     .build();
             seatRepository.save(seat);
         }
+    }
+
+    @Transactional
+    public void deleteSchedule(Long scheduleId) {
+        MovieSchedule schedule = movieScheduleRepository.findById(scheduleId).orElseThrow(()-> new IllegalArgumentException("스케줄 없음"));
+
+        MovieScheduleResponseDto dto = new MovieScheduleResponseDto();
+        String postUrl = imageService.getMainImage(schedule.getMovie().getMovieId());
+
+        dto.setScheduleId(schedule.getMovieScheduleId());
+        dto.setStartTime(schedule.getStartTime().toString());
+        dto.setEndTime(schedule.getEndTime().toString());
+        dto.setTitle(schedule.getMovie().getTitle());
+        dto.setTheaterHall(schedule.getTheaterHall().getName());
+
+        dto.setPosterUrl(postUrl);
+        dto.setCinemaId(schedule.getTheaterHall().getCinema().getId());
+        dto.setCinemaName(schedule.getTheaterHall().getCinema().getName());
+        dto.setCinemaLocation(schedule.getTheaterHall().getCinema().getLocation());
+
+        List<ResponseSeatDto> totalSeats = seatRepository.findByMovieSchedule(schedule)
+                .stream()
+                .map(Seat::toResponeSeatDto)
+                .collect(Collectors.toList());
+
+        List<ResponseSeatDto> remainingSeats = seatRepository.findByMovieScheduleAndIsAvailable(schedule, true)
+                .stream()
+                .map(Seat::toResponeSeatDto)
+                .collect(Collectors.toList());
+
+        dto.setTotalSeats(totalSeats.size());
+        dto.setRemainingSeats(remainingSeats);
+
+
+        if (dto.getTotalSeats().equals(dto.getRemainingSeats().size())) {
+            // 2. 잔여 좌석 수와 총 좌석 수가 같으면 삭제 진행
+            // 관련된 좌석 삭제
+            seatRepository.deleteByMovieSchedule(schedule);  // 좌석 삭제
+            movieScheduleRepository.delete(schedule);  // 영화 스케줄 삭제
+        } else {
+            // 3. 만약 잔여 좌석 수와 총 좌석 수가 다르면 삭제 불가
+            throw new RuntimeException("잔여 좌석 수가 총 좌석 수와 일치하지 않아서 삭제할 수 없습니다.");
+        }
+
     }
 
 
