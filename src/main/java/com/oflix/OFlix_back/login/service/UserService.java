@@ -2,6 +2,7 @@ package com.oflix.OFlix_back.login.service;
 
 import com.oflix.OFlix_back.login.dto.*;
 import com.oflix.OFlix_back.login.entity.User;
+import com.oflix.OFlix_back.login.repository.RefreshRepository;
 import com.oflix.OFlix_back.login.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +23,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
+    private final RefreshRepository refreshRepository;
     /**
      * 회원가입 (Create)
      */
@@ -111,6 +112,11 @@ public class UserService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
+        // Refresh 토큰 삭제
+        refreshRepository.deleteByUsername(username);
+
+        // 유저 삭제
         userRepository.delete(user);
     }
+
 }

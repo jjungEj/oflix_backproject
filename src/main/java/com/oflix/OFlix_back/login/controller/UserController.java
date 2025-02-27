@@ -2,6 +2,8 @@ package com.oflix.OFlix_back.login.controller;
 
 import com.oflix.OFlix_back.login.dto.*;
 import com.oflix.OFlix_back.login.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -35,10 +37,24 @@ public class UserController {
 
 
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteUser(@RequestParam String username) {
+    public ResponseEntity<String> deleteUser(@RequestParam String username, HttpServletResponse response) {
         userService.deleteUser(username);
+
+        // 쿠키 삭제
+        Cookie refreshCookie = new Cookie("refresh", null);
+        refreshCookie.setMaxAge(0);
+        refreshCookie.setPath("/");
+
+        Cookie accessCookie = new Cookie("access", null);
+        accessCookie.setMaxAge(0);
+        accessCookie.setPath("/");
+
+        response.addCookie(refreshCookie);
+        response.addCookie(accessCookie);
+
         return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
     }
+
 }
 
 
