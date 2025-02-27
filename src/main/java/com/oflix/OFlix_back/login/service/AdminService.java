@@ -4,6 +4,8 @@ package com.oflix.OFlix_back.login.service;
 import com.oflix.OFlix_back.login.entity.User;
 import com.oflix.OFlix_back.login.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +16,8 @@ public class AdminService {
 
     private final UserRepository userRepository;
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public Page<User> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);  // Pageable에 맞춰 페이지네이션된 유저 목록 반환
     }
 
     public void deleteUser(Integer userId) {

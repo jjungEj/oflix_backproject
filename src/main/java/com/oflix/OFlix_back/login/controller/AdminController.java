@@ -3,6 +3,10 @@ package com.oflix.OFlix_back.login.controller;
 import com.oflix.OFlix_back.login.entity.User;
 import com.oflix.OFlix_back.login.service.AdminService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,12 +20,18 @@ public class AdminController {
     private final AdminService adminService;
 
     @GetMapping("/alluser")
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = adminService.getAllUsers();
+    public ResponseEntity<Page<User>> getAllUsers(
+            @RequestParam(defaultValue = "username") String sortBy,  // 정렬 기준 (기본값: username)
+            @RequestParam(defaultValue = "asc") String direction,  // 정렬 방향 (기본값: asc)
+            @RequestParam(defaultValue = "0") int page,  // 페이지 번호 (기본값: 0)
+            @RequestParam(defaultValue = "10") int size  // 페이지 크기 (기본값: 10)
+    ) {
+        Pageable sortedPageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sortBy));
+        Page<User> users = adminService.getAllUsers(sortedPageable);
         if (users.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.noContent().build();  // 데이터가 없으면 204 상태 코드 반환
         }
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok(users);  // 페이지네이션된 유저 목록 반환
     }
 
     @DeleteMapping("/users/{id}")
