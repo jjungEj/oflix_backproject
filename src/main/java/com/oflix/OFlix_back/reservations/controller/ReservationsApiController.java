@@ -42,6 +42,8 @@ public class ReservationsApiController {
                         reservation.getStatus(),
                         reservation.getMovieSchedule().getMovie().getMovieId(),
                         reservation.getMovieSchedule().getMovie().getTitle(),
+                        reservation.getMovieSchedule().getStartTime(),
+                        reservation.getMovieSchedule().getEndTime(),
                         reservation.getMovieSchedule().getTheaterHall().getCinema().getName(),
                         reservation.getMovieSchedule().getTheaterHall().getName()
                 ))
