@@ -2,6 +2,7 @@ package com.oflix.OFlix_back.schedule.controller;
 
 import com.oflix.OFlix_back.schedule.dto.MovieScheduleRequestDto;
 import com.oflix.OFlix_back.schedule.dto.MovieScheduleResponseDto;
+import com.oflix.OFlix_back.schedule.dto.ResponseMovieScheduleDto;
 import com.oflix.OFlix_back.schedule.entity.MovieSchedule;
 import com.oflix.OFlix_back.schedule.service.MovieScheduleService;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class MovieScheduleApiController {
     //특정 영화관의 영화 스케줄 불러오기
     @GetMapping("/schedule/{cinemaId}")
     public ResponseEntity<?> schedule(@PathVariable Long cinemaId) {
-        List<MovieScheduleResponseDto> movieSchedules = movieScheduleService.findMovieScheduleByCinema(cinemaId);
+        List<ResponseMovieScheduleDto> movieSchedules = movieScheduleService.findMovieScheduleByCinema(cinemaId);
         return ResponseEntity.ok(movieSchedules);
     }
 

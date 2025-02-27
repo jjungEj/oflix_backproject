@@ -1,7 +1,6 @@
 package com.oflix.OFlix_back.schedule.dto;
 
 import com.oflix.OFlix_back.cinema.dto.ResponseSeatDto;
-import com.oflix.OFlix_back.cinema.entity.Seat;
 import lombok.*;
 
 import java.util.List;
@@ -11,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 @AllArgsConstructor
-public class MovieScheduleResponseDto {
+public class ResponseMovieScheduleDto {
     private Long scheduleId;            // 스케줄 id
     private String startTime;           // 상영 시작 시간
     private String endTime;             // 상영 종료 시간
@@ -24,4 +23,6 @@ public class MovieScheduleResponseDto {
     private Long cinemaId;              // 영화관 id
     private String cinemaName;          // 영화관 이름
     private String cinemaLocation;      // 영화관 주소
+
+    private String theaterHall; //상영관 추가
 }
