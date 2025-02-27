@@ -37,13 +37,16 @@ public class MovieService {
     @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
     public void updateMovieStatuses() {
         List<Movie> movies = movieRepository.findAll();
+        LocalDate today = LocalDate.now();
         for (Movie movie : movies) {
-            if (movie.getReleaseDate().isBefore(LocalDate.now())) {
-                movie.setMovieStatus(MovieStatus.NOW_SHOWING); // 현재 날짜가 releaseDate 이전이면 NOW_SHOWING
-            } else {
-                movie.setMovieStatus(MovieStatus.COMING_SOON); // 그렇지 않으면 COMING_SOON
+            MovieStatus newStatus = !movie.getReleaseDate().isAfter(today)
+                    ? MovieStatus.NOW_SHOWING
+                    : MovieStatus.COMING_SOON;
+
+            if (!movie.getMovieStatus().equals(newStatus)) { // 기존 상태와 다를 때만 저장
+                movie.setMovieStatus(newStatus);
+                movieRepository.save(movie);
             }
-            movieRepository.save(movie); // 상태 업데이트 후 저장
         }
     }
 
