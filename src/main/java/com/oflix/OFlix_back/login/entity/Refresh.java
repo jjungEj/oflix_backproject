@@ -17,7 +17,7 @@ public class Refresh {
     @Column(name = "user_id", nullable = false)
     private String username;
 
-    @Column(name = "refresh", nullable = false)
+    @Column(name = "refresh", nullable = false, length = 512)
     private String refresh;
 
     @Column(name = "expiration", nullable = false)
