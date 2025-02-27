@@ -91,7 +91,7 @@ public class MovieScheduleService {
                     dto.setStartTime(schedule.getStartTime().toString());
                     dto.setEndTime(schedule.getEndTime().toString());
                     dto.setTitle(schedule.getMovie().getTitle());
-                   // dto.setTheaterHall(schedule.getTheaterHall().getName());
+                    dto.setTheaterHall(schedule.getTheaterHall().getName());
 
                     dto.setPosterUrl(postUrl);
                     dto.setCinemaId(schedule.getTheaterHall().getCinema().getId());
