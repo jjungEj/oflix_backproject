@@ -62,8 +62,6 @@ public class JWTUtil {
                 .claim("category", category)
                 .claim("username", username)
                 .claim("role", role)
-                .claim("nickname", nickname) // nickname 추가
-                .claim("phoneNumber", phoneNumber) // phoneNumber
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
                 .signWith(secretKey)

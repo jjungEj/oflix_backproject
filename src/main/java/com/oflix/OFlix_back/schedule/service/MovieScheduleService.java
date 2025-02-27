@@ -63,4 +63,37 @@ public class MovieScheduleService {
                 })
                 .toList();
     }
+
+    public List<MovieScheduleResponseDto> findSchedulesByTheater(Long theaterHallId) {
+        List<MovieSchedule> schedules = movieScheduleRepository.findByTheaterHallId(theaterHallId);
+
+        log.info("Found {} schedules for theaterHallId={}", schedules.size(), theaterHallId);
+
+        return schedules.stream()
+                .map(schedule -> {
+                    // 사용 가능한 좌석 조회
+                    List<Seat> remainingSeats = seatRepository.findByMovieScheduleAndIsAvailable(schedule, true);
+                    int totalSeats = seatRepository.findByMovieSchedule(schedule).size();
+
+                    // Seat 엔티티 -> ResponseSeatDto 변환
+                    List<ResponseSeatDto> responseSeats = remainingSeats.stream()
+                            .map(Seat::toResponeSeatDto)
+                            .collect(Collectors.toList());
+
+                    return new MovieScheduleResponseDto(
+                            schedule.getMovieScheduleId(),
+                            schedule.getStartTime().toString(),
+                            schedule.getEndTime().toString(),
+                            schedule.getMovie().getTitle(),
+                            null,
+                            totalSeats,
+                            responseSeats,
+                            schedule.getTheaterHall().getCinema().getId(),
+                            schedule.getTheaterHall().getCinema().getName(),
+                            schedule.getTheaterHall().getCinema().getLocation()
+                    );
+                })
+                .collect(Collectors.toList());
+    }
+
 }

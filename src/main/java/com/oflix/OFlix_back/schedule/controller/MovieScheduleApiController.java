@@ -10,6 +10,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -24,5 +25,11 @@ public class MovieScheduleApiController {
         List<MovieScheduleResponseDto> movieSchedules = movieScheduleService.findAllSchedules();
 
         return ResponseEntity.ok(movieSchedules);
+    }
+
+    @GetMapping("/schedules/theater")
+    public ResponseEntity<List<MovieScheduleResponseDto>> getSchedulesByTheater(@RequestParam Long theaterHallId) {
+        List<MovieScheduleResponseDto> schedules = movieScheduleService.findSchedulesByTheater(theaterHallId);
+        return ResponseEntity.ok(schedules);
     }
 }

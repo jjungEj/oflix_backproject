@@ -18,6 +18,7 @@ public class RequestPaymentDto {
     private String totalAmount;
     private String paymentMethod;
     private String useremail;
+    private String userId;
 
     @Getter
     @Setter
@@ -47,10 +48,6 @@ public class RequestPaymentDto {
         }
     }
 
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @ToString
     public static class TicketType {
         private String id;
         private String name;
